@@ -1,5 +1,8 @@
+import CTA from "@/src/modules/home/CTA";
+import Helpline from "@/src/modules/home/Helpline";
 import Hero from "@/src/modules/home/Hero";
 import HowItWorks from "@/src/modules/home/HowItWorks";
+import Impact from "@/src/modules/home/Impact";
 
 export const metadata = {
   title: 'Nirapod Kontho | Safe Reporting Platform',
