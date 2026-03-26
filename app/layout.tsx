@@ -4,8 +4,6 @@ import "./globals.css";
 import QueryProvider from "@/src/providers/QueryProvider";
 import { AuthProvider } from "@/src/providers/AuthContext";
 import ThemeProvider from "@/src/providers/ThemeProvider";
-import Navbar from "@/components/shared/Navbar";
-import Footer from "@/components/shared/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -38,14 +36,10 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <ThemeProvider>
           <AuthProvider>
-            <Navbar />
             <QueryProvider>
-              <main className="grow">
-               <TooltipProvider>{children}</TooltipProvider>
-              </main>
+              <TooltipProvider>{children}</TooltipProvider>
             </QueryProvider>
             <Toaster richColors position="top-right" />
-            <Footer />
           </AuthProvider>
         </ThemeProvider>
       </body>
