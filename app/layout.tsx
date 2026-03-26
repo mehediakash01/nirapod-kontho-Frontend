@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/src/providers/QueryProvider";
+import { AuthProvider } from "@/src/providers/AuthContext";
+import ThemeProvider from "@/src/providers/ThemeProvider";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
 import { Toaster } from "@/components/ui/sonner";
@@ -30,16 +32,21 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <Navbar />
-        <QueryProvider>
-          <main className="grow">
-            {children}
-          </main>
-        </QueryProvider>
-        <Toaster richColors position="top-right" />
-        <Footer />
+        <ThemeProvider>
+          <AuthProvider>
+            <Navbar />
+            <QueryProvider>
+              <main className="grow">
+                {children}
+              </main>
+            </QueryProvider>
+            <Toaster richColors position="top-right" />
+            <Footer />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

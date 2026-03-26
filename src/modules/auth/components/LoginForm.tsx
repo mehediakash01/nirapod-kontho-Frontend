@@ -11,6 +11,7 @@ import { loginSchema } from '../validation';
 
 import { useRouter } from 'next/navigation';
 import { loginUser } from '../service';
+import { useAuth } from '@/src/providers/AuthContext';
 import {
   Card,
   CardContent,
@@ -25,6 +26,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
   const router = useRouter();
+  const { refetchSession } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -39,6 +41,9 @@ export default function LoginForm() {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       await loginUser(data);
+      // Small delay to ensure token is stored
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await refetchSession();
       toast.success('Signed in successfully');
       router.push('/dashboard');
     } catch (err: any) {

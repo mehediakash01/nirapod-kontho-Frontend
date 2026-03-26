@@ -11,6 +11,7 @@ import { registerSchema } from '../validation';
 
 import { useRouter } from 'next/navigation';
 import { registerUser } from '../service';
+import { useAuth } from '@/src/providers/AuthContext';
 import {
   Card,
   CardContent,
@@ -25,6 +26,7 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function RegisterForm() {
   const router = useRouter();
+  const { refetchSession } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -38,8 +40,11 @@ export default function RegisterForm() {
   const onSubmit = async (data: RegisterFormValues) => {
     try {
       await registerUser(data);
+      // Small delay to ensure token is stored
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await refetchSession();
       toast.success('Account created successfully');
-      router.push('/login');
+      router.push('/dashboard');
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Register failed');
     }
