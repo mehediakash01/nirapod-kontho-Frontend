@@ -4,6 +4,7 @@ import "./globals.css";
 import QueryProvider from "@/src/providers/QueryProvider";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,10 +34,11 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <Navbar />
         <QueryProvider>
-          <main className="flex-grow">
+          <main className="grow">
             {children}
           </main>
         </QueryProvider>
+        <Toaster richColors position="top-right" />
         <Footer />
       </body>
     </html>
