@@ -3,13 +3,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { api } from '@/src/services/api';
 import { toast } from 'sonner';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  image?: string;
-}
+import type { User } from '@/src/types/user';
 
 interface AuthContextType {
   user: User | null;

@@ -7,6 +7,7 @@ import ThemeProvider from "@/src/providers/ThemeProvider";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,7 +41,7 @@ export default function RootLayout({
             <Navbar />
             <QueryProvider>
               <main className="grow">
-                {children}
+               <TooltipProvider>{children}</TooltipProvider>
               </main>
             </QueryProvider>
             <Toaster richColors position="top-right" />
