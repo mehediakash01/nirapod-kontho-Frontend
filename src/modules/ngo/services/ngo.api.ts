@@ -18,6 +18,16 @@ export interface NgoCase {
     isAnonymous: boolean;
     createdAt: string;
   };
+  notes: Array<{
+    id: string;
+    note: string;
+    createdAt: string;
+    author: {
+      id: string;
+      name: string | null;
+      email: string;
+    };
+  }>;
 }
 
 export interface UpdateCasePayload {

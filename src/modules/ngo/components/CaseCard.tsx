@@ -18,6 +18,11 @@ function CaseCardComponent({ item, onUpdate, isUpdating }: CaseCardProps) {
 
   const isDirty = status !== item.status || note.trim().length > 0;
 
+  const handleUpdate = async () => {
+    await onUpdate(item.id, status, note.trim() || undefined);
+    setNote('');
+  };
+
   return (
     <div className="space-y-3 rounded-lg border bg-white p-4 shadow-sm">
       <div className="flex items-center justify-between">
@@ -46,7 +51,7 @@ function CaseCardComponent({ item, onUpdate, isUpdating }: CaseCardProps) {
         <Button
           type="button"
           disabled={!isDirty || isUpdating}
-          onClick={() => onUpdate(item.id, status, note.trim() || undefined)}
+          onClick={handleUpdate}
         >
           Update Case
         </Button>
@@ -60,6 +65,20 @@ function CaseCardComponent({ item, onUpdate, isUpdating }: CaseCardProps) {
         className="w-full rounded border p-2 text-sm"
         maxLength={500}
       />
+
+      {item.notes?.length ? (
+        <div className="space-y-2 border-t pt-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Recent Internal Notes</p>
+          {item.notes.map((entry) => (
+            <div key={entry.id} className="rounded border bg-slate-50 p-2">
+              <p className="text-sm text-gray-700">{entry.note}</p>
+              <p className="mt-1 text-xs text-gray-500">
+                {entry.author.name || entry.author.email} • {new Date(entry.createdAt).toLocaleString()}
+              </p>
+            </div>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }
