@@ -62,14 +62,35 @@ export default function Navbar() {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-secondary to-tertiary group-hover:w-full transition-all duration-300" />
             </Link>
             <Link
-              href="#how-it-works"
+              href="/about"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative group"
             >
-              How It Works
+              About
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-secondary to-tertiary group-hover:w-full transition-all duration-300" />
             </Link>
             <Link
-              href="#contact"
+              href="/how-it-works"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative group"
+            >
+              Workflow
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-secondary to-tertiary group-hover:w-full transition-all duration-300" />
+            </Link>
+            <Link
+              href="/safety"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative group"
+            >
+              Safety
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-secondary to-tertiary group-hover:w-full transition-all duration-300" />
+            </Link>
+            <Link
+              href="/resources"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative group"
+            >
+              Resources
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-secondary to-tertiary group-hover:w-full transition-all duration-300" />
+            </Link>
+            <Link
+              href="/contact"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative group"
             >
               Contact
@@ -196,14 +217,35 @@ export default function Navbar() {
                 Home
               </Link>
               <Link
-                href="#how-it-works"
+                href="/about"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground px-4 py-2 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
-                How It Works
+                About
               </Link>
               <Link
-                href="#contact"
+                href="/how-it-works"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground px-4 py-2 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Workflow
+              </Link>
+              <Link
+                href="/safety"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground px-4 py-2 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Safety
+              </Link>
+              <Link
+                href="/resources"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground px-4 py-2 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Resources
+              </Link>
+              <Link
+                href="/contact"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground px-4 py-2 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
