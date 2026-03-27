@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function CTA() {
   return (
     <section className="py-20 px-6 text-center">
@@ -9,9 +11,9 @@ export default function CTA() {
         Your contribution helps provide legal and medical support.
       </p>
 
-      <button className="mt-6 bg-secondary text-white px-6 py-3 rounded-lg">
+      <Link href="/donation" className="mt-6 inline-block bg-secondary text-white px-6 py-3 rounded-lg">
         Donate Now
-      </button>
+      </Link>
     </section>
   );
 }

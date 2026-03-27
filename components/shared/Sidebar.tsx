@@ -14,6 +14,7 @@ export default function Sidebar() {
       { name: 'Dashboard', path: '/dashboard/user' },
       { name: 'My Reports', path: '/dashboard/user/reports' },
       { name: 'Notifications', path: '/dashboard/user/notifications' },
+      { name: 'Donations', path: '/dashboard/user/donations' },
     ],
     MODERATOR: [
       { name: 'Pending Reports', path: '/dashboard/moderator' },
@@ -23,6 +24,7 @@ export default function Sidebar() {
     ],
     SUPER_ADMIN: [
       { name: 'Manage NGOs', path: '/dashboard/super-admin' },
+      { name: 'Payment Dashboard', path: '/dashboard/super-admin/payments' },
     ],
   };
 

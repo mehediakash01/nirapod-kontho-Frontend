@@ -28,7 +28,7 @@ export default function UserDashboard() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <Link href="/dashboard/user/reports" className="rounded-lg border bg-white p-4 shadow-sm">
           <p className="text-sm text-gray-500">Total Reports</p>
           <p className="mt-1 text-2xl font-bold text-primary">{data?.length ?? 0}</p>
@@ -42,6 +42,10 @@ export default function UserDashboard() {
         <Link href="/dashboard/user/notifications" className="rounded-lg border bg-white p-4 shadow-sm">
           <p className="text-sm text-gray-500">Unread Notifications</p>
           <p className="mt-1 text-2xl font-bold text-secondary">{unreadCount}</p>
+        </Link>
+        <Link href="/dashboard/user/donations" className="rounded-lg border bg-white p-4 shadow-sm">
+          <p className="text-sm text-gray-500">Support Campaign</p>
+          <p className="mt-1 text-sm font-semibold text-primary">View donation history</p>
         </Link>
       </div>
 
