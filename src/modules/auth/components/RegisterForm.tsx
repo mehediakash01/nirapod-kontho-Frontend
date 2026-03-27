@@ -12,6 +12,8 @@ import { registerSchema } from '../validation';
 import { useRouter } from 'next/navigation';
 import { registerUser } from '../service';
 import { useAuth } from '@/src/providers/AuthContext';
+import { initiateGoogleAuthFlow } from '../utils/oauth';
+import OAuthButton from './OAuthButton';
 import {
   Card,
   CardContent,
@@ -36,6 +38,7 @@ export default function RegisterForm() {
   const router = useRouter();
   const { refetchSession } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState(false);
 
   const {
     register,
@@ -65,6 +68,17 @@ export default function RegisterForm() {
     }
   };
 
+  const handleGoogleSignup = async () => {
+    try {
+      setOauthLoading(true);
+      await initiateGoogleAuthFlow();
+    } catch (error) {
+      console.error('Google signup error:', error);
+      toast.error('Google sign up failed. Please try again.');
+      setOauthLoading(false);
+    }
+  };
+
   return (
     <Card className="w-full max-w-md border-0 bg-transparent shadow-none">
       <CardHeader className="space-y-2 text-center">
@@ -78,6 +92,21 @@ export default function RegisterForm() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <OAuthButton
+            provider="google"
+            isLoading={oauthLoading}
+            onClick={handleGoogleSignup}
+          />
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-primary/15" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white/70 px-2 text-muted-foreground">Or sign up with email</span>
+            </div>
+          </div>
+
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Full name</label>
             <div className="relative">

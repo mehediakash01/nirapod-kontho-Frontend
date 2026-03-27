@@ -12,6 +12,8 @@ import { loginSchema } from '../validation';
 import { useRouter } from 'next/navigation';
 import { loginUser } from '../service';
 import { useAuth } from '@/src/providers/AuthContext';
+import { initiateGoogleAuthFlow } from '../utils/oauth';
+import OAuthButton from './OAuthButton';
 import {
   Card,
   CardContent,
@@ -37,6 +39,7 @@ export default function LoginForm() {
   const { refetchSession } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState(false);
 
   const {
     register,
@@ -66,6 +69,17 @@ export default function LoginForm() {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      setOauthLoading(true);
+      await initiateGoogleAuthFlow();
+    } catch (error) {
+      console.error('Google login error:', error);
+      toast.error('Google sign in failed. Please try again.');
+      setOauthLoading(false);
+    }
+  };
+
   return (
     <Card className="w-full max-w-md border-0 bg-transparent shadow-none">
       <CardHeader className="space-y-2 text-center">
@@ -79,6 +93,21 @@ export default function LoginForm() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <OAuthButton
+            provider="google"
+            isLoading={oauthLoading}
+            onClick={handleGoogleLogin}
+          />
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-primary/15" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white/70 px-2 text-muted-foreground">Or continue with email</span>
+            </div>
+          </div>
+
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Email address</label>
             <div className="relative">
