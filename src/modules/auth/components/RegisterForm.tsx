@@ -24,6 +24,14 @@ import { Button } from '@/components/ui/button';
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
+type ApiErrorShape = {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+};
+
 export default function RegisterForm() {
   const router = useRouter();
   const { refetchSession } = useAuth();
@@ -45,8 +53,15 @@ export default function RegisterForm() {
       await refetchSession();
       toast.success('Account created successfully');
       router.push('/dashboard');
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Register failed');
+    } catch (err: unknown) {
+      const message =
+        typeof err === 'object' &&
+        err !== null &&
+        'response' in err &&
+        typeof (err as ApiErrorShape).response?.data?.message === 'string'
+          ? (err as ApiErrorShape).response?.data?.message
+          : 'Register failed';
+      toast.error(message);
     }
   };
 

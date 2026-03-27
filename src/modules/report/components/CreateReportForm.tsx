@@ -23,7 +23,7 @@ export default function CreateReportForm() {
       await createReport(data);
       toast.success('Report submitted successfully');
       router.push('/dashboard/user/reports');
-    } catch (err) {
+    } catch {
       toast.error('Failed to create report');
     }
   };

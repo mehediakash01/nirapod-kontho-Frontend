@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import ProtectedRoute from '@/components/shared/ProtectedRoute';
 import PendingReportCard from '@/src/modules/verification/components/PendingReportCard';
 import {
   getPendingReports,
@@ -61,28 +62,30 @@ export default function ModeratorDashboardPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-primary">Moderator Dashboard</h1>
-        <p className="text-sm text-gray-600">Review submitted reports and approve or reject them.</p>
-      </div>
+    <ProtectedRoute allowedRoles={['MODERATOR', 'SUPER_ADMIN']}>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-primary">Moderator Dashboard</h1>
+          <p className="text-sm text-gray-600">Review submitted reports and approve or reject them.</p>
+        </div>
 
-      {data?.length ? (
-        <div className="grid gap-4 md:grid-cols-2">
-          {data.map((report) => (
-            <PendingReportCard
-              key={report.id}
-              report={report}
-              isUpdating={isPending}
-              onAction={handleAction}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="rounded-lg border bg-white p-6 text-sm text-gray-600">
-          No pending reports right now.
-        </div>
-      )}
-    </div>
+        {data?.length ? (
+          <div className="grid gap-4 md:grid-cols-2">
+            {data.map((report) => (
+              <PendingReportCard
+                key={report.id}
+                report={report}
+                isUpdating={isPending}
+                onAction={handleAction}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-lg border bg-white p-6 text-sm text-gray-600">
+            No pending reports right now.
+          </div>
+        )}
+      </div>
+    </ProtectedRoute>
   );
 }

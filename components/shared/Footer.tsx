@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Mail, Phone, MapPin, Smartphone, ScreenShareOffIcon, FileBraces, TowerControl, Link2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Smartphone, FileBraces, TowerControl, Link2 } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();

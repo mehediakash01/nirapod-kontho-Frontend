@@ -24,6 +24,14 @@ import { Button } from '@/components/ui/button';
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
+type ApiErrorShape = {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+};
+
 export default function LoginForm() {
   const router = useRouter();
   const { refetchSession } = useAuth();
@@ -46,8 +54,15 @@ export default function LoginForm() {
       await refetchSession();
       toast.success('Signed in successfully');
       router.push('/dashboard');
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Sign in failed');
+    } catch (err: unknown) {
+      const message =
+        typeof err === 'object' &&
+        err !== null &&
+        'response' in err &&
+        typeof (err as ApiErrorShape).response?.data?.message === 'string'
+          ? (err as ApiErrorShape).response?.data?.message
+          : 'Sign in failed';
+      toast.error(message);
     }
   };
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -11,15 +11,9 @@ import { useAuth } from '@/src/providers/AuthContext';
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const { user, isLoading, logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
-
-  // Ensure component is mounted before rendering theme-dependent content
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleThemeChange = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
@@ -93,7 +87,7 @@ export default function Navbar() {
               className="rounded-lg"
               aria-label="Toggle theme"
             >
-              {mounted && theme === 'light' ? (
+              {theme === 'light' ? (
                 <Moon className="h-4 w-4" />
               ) : (
                 <Sun className="h-4 w-4" />
@@ -168,7 +162,7 @@ export default function Navbar() {
               className="rounded-lg"
               aria-label="Toggle theme"
             >
-              {mounted && theme === 'light' ? (
+              {theme === 'light' ? (
                 <Moon className="h-4 w-4" />
               ) : (
                 <Sun className="h-4 w-4" />
