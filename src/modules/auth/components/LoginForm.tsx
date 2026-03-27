@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -34,9 +34,9 @@ type ApiErrorShape = {
   };
 };
 
-export default function LoginForm() {
+function LoginFormContent() {
   const router = useRouter();
-  const { refetchSession } = useAuth();
+  const { refetchSession, user } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [oauthLoading, setOauthLoading] = useState(false);
@@ -190,5 +190,13 @@ export default function LoginForm() {
         </form>
       </CardContent>
     </Card>
+  );
+}
+
+export default function LoginForm() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginFormContent />
+    </Suspense>
   );
 }

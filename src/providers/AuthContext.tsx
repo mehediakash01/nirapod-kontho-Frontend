@@ -21,14 +21,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchSession = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await api.get('/auth/session');
-      const sessionUser = response.data?.user ?? response.data?.data?.user;
+      let response;
 
-      if (sessionUser) {
-        setUser(sessionUser);
-      } else {
-        setUser(null);
+      // Try OAuth session endpoint first (for OAuth-authenticated users)
+      try {
+        response = await api.get('/oauth/session');
+        const sessionUser = response.data?.user ?? response.data?.data?.user;
+        if (sessionUser) {
+          setUser(sessionUser);
+          return;
+        }
+      } catch (oauthError) {
+        console.log('OAuth session not found, trying auth endpoint...');
       }
+
+      // Fall back to regular auth session endpoint (for email/password users)
+      try {
+        response = await api.get('/auth/session');
+        const sessionUser = response.data?.user ?? response.data?.data?.user;
+        if (sessionUser) {
+          setUser(sessionUser);
+          return;
+        }
+      } catch (authError) {
+        console.log('Auth session not found');
+      }
+
+      // No session found
+      setUser(null);
     } catch (error) {
       console.error('Session fetch error:', error);
       setUser(null);
