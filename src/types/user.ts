@@ -1,5 +1,6 @@
 export type Role =
   | 'SUPER_ADMIN'
+  | 'NGO_ADMIN'
   | 'ADMIN'
   | 'MODERATOR'
   | 'USER';
