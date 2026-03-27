@@ -1,7 +1,10 @@
-export default function ReportCard({ report }: any) {
+import type { Report } from '../types';
+
+export default function ReportCard({ report }: { report: Report }) {
   const statusColor = {
-    PENDING: 'bg-yellow-100 text-yellow-700',
-    APPROVED: 'bg-green-100 text-green-700',
+    DRAFT: 'bg-slate-100 text-slate-700',
+    SUBMITTED: 'bg-yellow-100 text-yellow-700',
+    VERIFIED: 'bg-green-100 text-green-700',
     REJECTED: 'bg-red-100 text-red-700',
   };
 
@@ -25,6 +28,10 @@ export default function ReportCard({ report }: any) {
 
       <p className="text-sm mt-2 text-gray-400">
         {report.location}
+      </p>
+
+      <p className="text-xs mt-2 text-gray-400">
+        {new Date(report.createdAt).toLocaleString()}
       </p>
     </div>
   );

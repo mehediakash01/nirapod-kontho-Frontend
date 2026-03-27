@@ -18,7 +18,7 @@ export default function Sidebar() {
     MODERATOR: [
       { name: 'Pending Reports', path: '/dashboard/moderator' },
     ],
-    ADMIN: [
+    NGO_ADMIN: [
       { name: 'My Cases', path: '/dashboard/ngo' },
     ],
     SUPER_ADMIN: [

@@ -21,9 +21,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchSession = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await api.get('/auth/get-session');
-      if (response.data?.user) {
-        setUser(response.data.user);
+      const response = await api.get('/auth/session');
+      const sessionUser = response.data?.user ?? response.data?.data?.user;
+
+      if (sessionUser) {
+        setUser(sessionUser);
       } else {
         setUser(null);
       }
