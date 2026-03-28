@@ -1,50 +1,99 @@
 'use client';
 
-
 import { useAuth } from '@/src/hooks/useAuth';
+import { cn } from '@/lib/utils';
+import { BarChart3, Bell, BriefcaseBusiness, CreditCard, LayoutGrid, ShieldCheck, Users } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 
-export default function Sidebar() {
+type SidebarProps = {
+  mobileOpen: boolean;
+  onMobileOpenChange: (open: boolean) => void;
+};
+
+type MenuItem = {
+  name: string;
+  path: string;
+  icon: React.ComponentType<{ className?: string }>;
+};
+
+const menu: Record<string, MenuItem[]> = {
+  USER: [
+    { name: 'Dashboard', path: '/dashboard/user', icon: LayoutGrid },
+    { name: 'My Reports', path: '/dashboard/user/reports', icon: ShieldCheck },
+    { name: 'Notifications', path: '/dashboard/user/notifications', icon: Bell },
+    { name: 'Donations', path: '/dashboard/user/donations', icon: CreditCard },
+  ],
+  MODERATOR: [{ name: 'Pending Reports', path: '/dashboard/moderator', icon: ShieldCheck }],
+  NGO_ADMIN: [{ name: 'My Cases', path: '/dashboard/ngo', icon: BriefcaseBusiness }],
+  SUPER_ADMIN: [
+    { name: 'Manage NGOs', path: '/dashboard/super-admin', icon: Users },
+    { name: 'Payment Dashboard', path: '/dashboard/super-admin/payments', icon: BarChart3 },
+  ],
+};
+
+export default function Sidebar({
+  mobileOpen,
+  onMobileOpenChange,
+}: SidebarProps) {
   const { data } = useAuth();
+  const pathname = usePathname();
 
   const role = data?.role;
+  const items = menu[role as keyof typeof menu] ?? [];
 
-  const menu = {
-    USER: [
-      { name: 'Dashboard', path: '/dashboard/user' },
-      { name: 'My Reports', path: '/dashboard/user/reports' },
-      { name: 'Notifications', path: '/dashboard/user/notifications' },
-      { name: 'Donations', path: '/dashboard/user/donations' },
-    ],
-    MODERATOR: [
-      { name: 'Pending Reports', path: '/dashboard/moderator' },
-    ],
-    NGO_ADMIN: [
-      { name: 'My Cases', path: '/dashboard/ngo' },
-    ],
-    SUPER_ADMIN: [
-      { name: 'Manage NGOs', path: '/dashboard/super-admin' },
-      { name: 'Payment Dashboard', path: '/dashboard/super-admin/payments' },
-    ],
-  };
+  const SidebarNav = ({ onNavigate }: { onNavigate?: () => void }) => (
+    <nav className="space-y-1">
+      {items.map((item) => {
+        const Icon = item.icon;
+        const isActive = pathname === item.path || pathname.startsWith(`${item.path}/`);
 
-  return (
-    <aside className="w-64 bg-sidebar p-4 border-r">
-      <h2 className="text-xl font-bold mb-6 text-primary">
-        Nirapod
-      </h2>
-
-      <nav className="space-y-2">
-        {menu[role as keyof typeof menu]?.map((item) => (
+        return (
           <Link
             key={item.path}
             href={item.path}
-            className="block p-2 rounded hover:bg-accent"
+            onClick={onNavigate}
+            className={cn(
+              'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all',
+              isActive
+                ? 'bg-sidebar-accent text-sidebar-accent-foreground shadow-sm'
+                : 'text-sidebar-foreground/80 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground'
+            )}
           >
-            {item.name}
+            <Icon className="h-4 w-4 shrink-0" />
+            <span>{item.name}</span>
           </Link>
-        ))}
-      </nav>
-    </aside>
+        );
+      })}
+    </nav>
+  );
+
+
+  return (
+    <>
+      <aside className="sticky top-0 hidden h-screen w-72 shrink-0 border-r border-sidebar-border bg-sidebar/95 p-4 lg:flex lg:flex-col">
+        <div className="mb-8 rounded-2xl border border-sidebar-border bg-sidebar px-4 py-5 shadow-sm">
+          <p className="text-xs font-medium uppercase tracking-wider text-sidebar-foreground/60">
+            Nirapod Kontho
+          </p>
+          <h2 className="mt-1 text-xl font-bold text-sidebar-primary">Dashboard</h2>
+        </div>
+
+        <SidebarNav />
+      </aside>
+
+      <Sheet open={mobileOpen} onOpenChange={onMobileOpenChange}>
+        <SheetContent side="left" className="w-74 border-sidebar-border bg-sidebar p-0" showCloseButton>
+          <SheetHeader className="border-b border-sidebar-border px-5 py-4">
+            <SheetTitle className="text-left text-base text-sidebar-primary">Nirapod Dashboard</SheetTitle>
+          </SheetHeader>
+
+          <div className="p-4">
+            <SidebarNav onNavigate={() => onMobileOpenChange(false)} />
+          </div>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }
