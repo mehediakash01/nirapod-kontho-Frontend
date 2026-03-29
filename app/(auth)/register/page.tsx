@@ -1,80 +1,164 @@
 import RegisterForm from "@/src/modules/auth/components/RegisterForm";
 import Link from 'next/link';
-import { BadgeCheck, ShieldPlus, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ShieldPlus, BadgeCheck, ArrowRight, CheckCircle2, Zap, Users } from 'lucide-react';
 
+const benefits = [
+  {
+    icon: CheckCircle2,
+    title: 'Verified Reports',
+    desc: 'Every submission goes through human moderation before escalation',
+    accent: 'text-secondary',
+  },
+  {
+    icon: BadgeCheck,
+    title: 'Direct NGO Support',
+    desc: 'Connected to 18+ verified partner organisations across Bangladesh',
+    accent: 'text-accent',
+  },
+  {
+    icon: Zap,
+    title: 'Real-time Updates',
+    desc: 'Track your case status and receive notifications at each stage',
+    accent: 'text-primary',
+  },
+  {
+    icon: Users,
+    title: 'Community Backed',
+    desc: 'Part of a growing network protecting thousands of people',
+    accent: 'text-secondary',
+  },
+];
 
 export default function RegisterPage() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[linear-gradient(145deg,#f8fafc_0%,#eaf4f1_52%,#f4eee7_100%)]">
-      {/* Animated gradient overlays */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(5,150,105,0.2),transparent_38%),radial-gradient(circle_at_90%_20%,rgba(53,38,12,0.15),transparent_34%),radial-gradient(circle_at_75%_90%,rgba(30,41,59,0.2),transparent_42%)]" />
-      
-      {/* Floating accent elements */}
-      <div className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-secondary/10 blur-3xl" />
-      <div className="pointer-events-none absolute -left-40 -bottom-40 h-96 w-96 rounded-full bg-tertiary/10 blur-3xl" />
+    <div className="relative min-h-screen overflow-hidden">
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-7xl items-center px-4 py-10 md:px-8">
-        <div className="grid w-full overflow-hidden rounded-3xl border border-primary/20 bg-white/60 shadow-[0_30px_80px_-30px_rgba(30,41,59,0.5)] backdrop-blur-xl md:grid-cols-2 gap-0">
-          {/* Left Section - Form */}
-          <section className="order-1 flex flex-col items-center justify-center bg-gradient-to-br from-white/80 via-white/60 to-secondary/5 p-6 md:order-1 md:p-8 lg:p-10">
+      {/* ── Full-page split background ───────────────────────── */}
+      <div className="pointer-events-none absolute inset-0 flex">
+        {/* Left panel — light */}
+        <div className="w-full md:w-1/2 bg-gradient-to-br from-white via-secondary/[0.03] to-primary/[0.05]" />
+        {/* Right panel — dark */}
+        <div className="hidden md:block w-1/2 bg-primary" />
+      </div>
+
+      {/* Decorative orbs */}
+      <div className="pointer-events-none absolute right-0 top-1/4 h-72 w-72 rounded-full bg-secondary/25 blur-[80px]" />
+      <div className="pointer-events-none absolute right-1/4 bottom-0 h-56 w-56 rounded-full bg-accent/20 blur-[80px]" />
+      <div className="pointer-events-none absolute left-8 top-16 h-64 w-64 rounded-full bg-primary/8 blur-[80px]" />
+
+      {/* Grid texture — right side */}
+      <div className="pointer-events-none absolute inset-y-0 right-0 hidden md:block w-1/2 opacity-[0.06]"
+        style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)', backgroundSize: '56px 56px' }} />
+
+      {/* Decorative arcs — right panel */}
+      <svg className="pointer-events-none absolute right-0 top-0 hidden md:block h-full w-1/2 opacity-[0.06]" viewBox="0 0 500 900" fill="none" preserveAspectRatio="xMidYMid slice">
+        <circle cx="0" cy="450" r="380" stroke="white" strokeWidth="1" />
+        <circle cx="0" cy="450" r="270" stroke="white" strokeWidth="1" />
+        <circle cx="0" cy="450" r="170" stroke="white" strokeWidth="1" />
+      </svg>
+
+      {/* ── Content ──────────────────────────────────────────── */}
+      <div className="relative mx-auto flex min-h-screen w-full max-w-7xl items-center px-4 py-12 md:px-8">
+        <div className="grid w-full md:grid-cols-2 gap-0">
+
+          {/* LEFT — Form panel */}
+          <section className="order-1 flex flex-col items-center justify-center min-h-screen md:min-h-0 py-16 px-6 md:px-12 lg:px-16">
+
+            {/* Mobile logo */}
+            <div className="flex items-center gap-2.5 mb-10 md:hidden">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
+                <span className="text-xs font-black text-white">NK</span>
+              </div>
+              <span className="text-sm font-bold uppercase tracking-[0.14em] text-primary">Nirapod Kontho</span>
+            </div>
+
             <div className="w-full max-w-sm">
-              <div className="mb-8 text-center md:hidden">
-                <h1 className="text-2xl font-bold text-primary">Create Your Account</h1>
-                <p className="text-sm text-primary/70 mt-2">Join our safe reporting community</p>
+              {/* Form heading */}
+              <div className="mb-8">
+                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-secondary mb-2">Get started</p>
+                <h2 className="text-2xl font-black text-foreground tracking-tight">Create your account</h2>
+                <p className="mt-1.5 text-sm text-muted-foreground">Join the safe reporting community — free, always.</p>
               </div>
+
+              {/* The actual form component */}
               <RegisterForm />
-            </div>
-          </section>
 
-          {/* Right Section - Info */}
-          <section className="order-2 hidden flex-col justify-center space-y-8 border-t border-primary/10 p-8 md:order-2 md:flex md:border-l md:border-t-0 md:p-12 lg:p-16">
-            <div className="space-y-4">
-              <div className="inline-flex items-center gap-2 rounded-full border border-secondary/40 bg-secondary/10 px-3.5 py-1.5 text-sm font-semibold text-secondary">
-                <ShieldPlus className="h-4 w-4" />
-                Start Securely
-              </div>
-              <h1 className="text-4xl font-bold leading-tight text-primary">
-                Report with<br />
-                <span className="bg-gradient-to-r from-secondary via-tertiary to-primary bg-clip-text text-transparent">
-                  Complete Confidence
-                </span>
-              </h1>
-              <p className="max-w-lg text-base leading-7 text-primary/75">
-                Registration gives you a powerful tool to submit reports safely, monitor real-time updates, and keep every report organized in your secure dashboard.
-              </p>
-            </div>
-
-            <div className="space-y-4 pt-4">
-              <div className="group flex items-start gap-4 rounded-xl border border-primary/10 bg-gradient-to-r from-white/50 to-white/30 p-4 transition-all hover:border-secondary/20 hover:bg-white/60">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary/15 text-secondary group-hover:bg-secondary/25 transition-colors flex-shrink-0">
-                  <CheckCircle2 className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="font-semibold text-primary">Verified Reports</p>
-                  <p className="text-sm text-primary/65">Moderation ensures quality and safety</p>
-                </div>
-              </div>
-
-              <div className="group flex items-start gap-4 rounded-xl border border-primary/10 bg-gradient-to-r from-white/50 to-white/30 p-4 transition-all hover:border-tertiary/20 hover:bg-white/60">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-tertiary/15 text-tertiary group-hover:bg-tertiary/25 transition-colors flex-shrink-0">
-                  <BadgeCheck className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="font-semibold text-primary">Direct NGO Support</p>
-                  <p className="text-sm text-primary/65">Real organizations ready to help</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-4">
-              <p className="text-sm text-primary/70">
+              {/* Mobile login link */}
+              <p className="mt-6 text-center text-xs text-muted-foreground md:hidden">
                 Already have an account?{' '}
-                <Link href="/login" className="inline-flex items-center gap-1 font-semibold text-secondary hover:text-secondary/80 transition-colors">
-                  Sign in <ArrowRight className="h-3.5 w-3.5" />
+                <Link href="/login" className="font-bold text-primary hover:underline">
+                  Sign in
                 </Link>
               </p>
             </div>
+
+            {/* Bottom trust badges */}
+            <div className="mt-10 flex flex-wrap justify-center gap-3">
+              {['Free to use', 'No spam', 'Identity protected'].map((badge) => (
+                <span key={badge} className="inline-flex items-center gap-1.5 rounded-full border border-primary/10 bg-primary/5 px-3 py-1.5 text-[10px] font-semibold text-primary/70">
+                  <CheckCircle2 className="h-3 w-3 text-secondary" />{badge}
+                </span>
+              ))}
+            </div>
           </section>
+
+          {/* RIGHT — Info panel */}
+          <section className="order-2 hidden md:flex flex-col justify-between py-16 px-12 lg:px-16">
+
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 border border-white/20">
+                <span className="text-sm font-black text-white">NK</span>
+              </div>
+              <span className="text-sm font-bold uppercase tracking-[0.14em] text-white/70">Nirapod Kontho</span>
+            </div>
+
+            {/* Main copy */}
+            <div className="space-y-8">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full border border-secondary/40 bg-secondary/15 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-secondary mb-6">
+                  <ShieldPlus className="h-3.5 w-3.5" />
+                  Start Securely
+                </div>
+
+                <h1 className="text-[clamp(2rem,4vw,3rem)] font-black leading-[0.95] tracking-[-0.03em] text-white">
+                  Report with<br />Complete<br />
+                  <span className="bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">
+                    Confidence
+                  </span>
+                </h1>
+
+                <div className="mt-4 h-[2px] w-16 rounded-full bg-gradient-to-r from-secondary to-accent" />
+
+                <p className="mt-6 text-sm leading-relaxed text-white/60 max-w-sm">
+                  Registration gives you a powerful tool to submit reports safely, monitor real-time updates, and keep every report organized in your secure dashboard.
+                </p>
+              </div>
+
+              {/* Benefits grid */}
+              <div className="grid grid-cols-2 gap-3">
+                {benefits.map((b) => {
+                  const Icon = b.icon;
+                  return (
+                    <div key={b.title} className="rounded-2xl border border-white/8 bg-white/5 p-4 backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/15">
+                      <Icon className={`h-5 w-5 ${b.accent} mb-2.5`} />
+                      <p className="text-xs font-bold text-white leading-snug">{b.title}</p>
+                      <p className="text-[11px] text-white/45 mt-1 leading-snug">{b.desc}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Footer link */}
+            <p className="text-xs text-white/40">
+              Already have an account?{' '}
+              <Link href="/login" className="inline-flex items-center gap-1 font-bold text-secondary hover:text-secondary/80 transition-colors">
+                Sign in <ArrowRight className="h-3 w-3" />
+              </Link>
+            </p>
+          </section>
+
         </div>
       </div>
     </div>
