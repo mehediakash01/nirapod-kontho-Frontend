@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import {
   BarChart3,
   Bell,
+  BookOpenText,
   BriefcaseBusiness,
   CreditCard,
   FileCheck2,
@@ -44,7 +45,14 @@ const menu: Record<string, MenuItem[]> = {
     { name: 'Pending Reports', path: '/dashboard/moderator/pending', icon: ClipboardCheck },
     { name: 'Reviewed Reports', path: '/dashboard/moderator/reviewed', icon: History },
   ],
-  NGO_ADMIN: [{ name: 'My Cases', path: '/dashboard/ngo', icon: BriefcaseBusiness }],
+  NGO_ADMIN: [
+    { name: 'Dashboard', path: '/dashboard/ngo', icon: LayoutGrid },
+    { name: 'My Cases', path: '/dashboard/ngo/cases', icon: BriefcaseBusiness },
+    { name: 'Analytics', path: '/dashboard/ngo/analytics', icon: BarChart3 },
+    { name: 'Notifications', path: '/dashboard/ngo/notifications', icon: Bell },
+    { name: 'Resources', path: '/dashboard/ngo/resources', icon: BookOpenText },
+    { name: 'Settings', path: '/dashboard/ngo/settings', icon: Settings2 },
+  ],
   SUPER_ADMIN: [
     { name: 'Dashboard', path: '/dashboard/super-admin', icon: LayoutGrid },
     { name: 'Manage NGOs', path: '/dashboard/super-admin/ngos', icon: Users },

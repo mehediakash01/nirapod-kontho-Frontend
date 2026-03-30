@@ -7,16 +7,25 @@ export interface NgoCase {
   reportId: string;
   assignedNgoId: string;
   status: CaseStatus;
-  priority: string;
+  priority: 'LOW' | 'MEDIUM' | 'HIGH';
   createdAt: string;
   report: {
     id: string;
     type: 'HARASSMENT' | 'DOMESTIC_VIOLENCE' | 'STALKING' | 'CORRUPTION' | 'THREAT';
     description: string;
     location: string;
+    incidentDate: string | null;
+    severity: 'MILD' | 'MODERATE' | 'URGENT' | null;
+    voiceNoteUrl: string | null;
     status: 'DRAFT' | 'SUBMITTED' | 'VERIFIED' | 'REJECTED';
     isAnonymous: boolean;
     createdAt: string;
+    evidence: Array<{
+      id: string;
+      fileUrl: string;
+      fileType: string;
+      createdAt: string;
+    }>;
   };
   notes: Array<{
     id: string;
