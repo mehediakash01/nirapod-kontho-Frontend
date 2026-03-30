@@ -90,20 +90,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     fetchSession();
   }, [fetchSession]);
 
-  // Detect visibility changes (tab focus)
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        // Tab became visible, refresh session to detect any changes
-        console.log('Tab became visible, refreshing session...');
-        fetchSession();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [fetchSession]);
-
   return (
     <AuthContext.Provider value={{ user, isLoading, logout, refetchSession: fetchSession }}>
       {children}
