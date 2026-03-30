@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
 import { Badge } from '@/components/ui/badge';
 import { getDonationDashboard } from '@/src/modules/payment/services/payment.api';
-import { getVerifiedReports } from '@/src/modules/super-admin/services/super-admin.api';
+import { getAssignmentAuditLogs } from '@/src/modules/super-admin/services/super-admin.api';
 
 type AuditEvent = {
   id: string;
@@ -17,9 +17,9 @@ type AuditEvent = {
 };
 
 export default function SuperAdminAuditLogsPage() {
-  const reportsQuery = useQuery({
-    queryKey: ['verified-reports'],
-    queryFn: getVerifiedReports,
+  const assignmentAuditQuery = useQuery({
+    queryKey: ['assignment-audit-logs'],
+    queryFn: getAssignmentAuditLogs,
   });
 
   const donationQuery = useQuery({
@@ -37,19 +37,19 @@ export default function SuperAdminAuditLogsPage() {
       severity: tx.paymentStatus === 'FAILED' ? 'ALERT' : tx.paymentStatus === 'PENDING' ? 'WARN' : 'INFO',
     }));
 
-    const reportEvents: AuditEvent[] = (reportsQuery.data ?? []).slice(0, 10).map((report) => ({
-      id: `report-${report.id}`,
+    const reportEvents: AuditEvent[] = (assignmentAuditQuery.data ?? []).slice(0, 20).map((log) => ({
+      id: `report-${log.id}`,
       category: 'REPORT',
-      title: `Verified ${report.type}`,
-      detail: report.case ? `Assigned case ${report.case.id}` : 'Awaiting NGO assignment',
-      time: report.createdAt,
-      severity: report.case?.priority === 'HIGH' ? 'ALERT' : report.case ? 'INFO' : 'WARN',
+      title: log.action === 'REASSIGN_NGO' ? 'NGO Reassignment' : 'NGO Assignment',
+      detail: `${log.message}${log.rationale ? ` | Rationale: ${log.rationale}` : ''}`,
+      time: log.createdAt,
+      severity: log.severity === 'ALERT' ? 'ALERT' : log.severity === 'WARN' ? 'WARN' : 'INFO',
     }));
 
     return [...paymentEvents, ...reportEvents]
       .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
-      .slice(0, 20);
-  }, [donationQuery.data, reportsQuery.data]);
+        .slice(0, 25);
+      }, [donationQuery.data, assignmentAuditQuery.data]);
 
   return (
     <ProtectedRoute allowedRoles={['SUPER_ADMIN']}>
@@ -61,11 +61,11 @@ export default function SuperAdminAuditLogsPage() {
           </p>
         </section>
 
-        {(reportsQuery.isLoading || donationQuery.isLoading) ? (
+        {(assignmentAuditQuery.isLoading || donationQuery.isLoading) ? (
           <p className="text-sm text-muted-foreground">Loading audit events...</p>
         ) : null}
 
-        {!reportsQuery.isLoading && !donationQuery.isLoading && !events.length ? (
+        {!assignmentAuditQuery.isLoading && !donationQuery.isLoading && !events.length ? (
           <p className="rounded-xl border border-dashed p-4 text-sm text-muted-foreground">No events available.</p>
         ) : null}
 

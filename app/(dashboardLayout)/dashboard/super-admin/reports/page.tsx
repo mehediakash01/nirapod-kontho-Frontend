@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
 import { Badge } from '@/components/ui/badge';
 import { ClipboardCheck, Flag, Handshake } from 'lucide-react';
-import { getVerifiedReports } from '@/src/modules/super-admin/services/super-admin.api';
+import { getAllNgos, getVerifiedReports } from '@/src/modules/super-admin/services/super-admin.api';
 
 const REPORT_TYPE_LABELS: Record<string, string> = {
   HARASSMENT: 'Harassment',
@@ -21,7 +21,16 @@ export default function SuperAdminReportsPage() {
     queryFn: getVerifiedReports,
   });
 
+  const ngosQuery = useQuery({
+    queryKey: ['all-ngos'],
+    queryFn: getAllNgos,
+  });
+
   const reports = useMemo(() => reportsQuery.data ?? [], [reportsQuery.data]);
+  const ngoNameById = useMemo(
+    () => new Map((ngosQuery.data ?? []).map((ngo) => [ngo.id, ngo.name])),
+    [ngosQuery.data]
+  );
 
   const summary = useMemo(() => {
     const assigned = reports.filter((r) => Boolean(r.case)).length;
@@ -68,6 +77,12 @@ export default function SuperAdminReportsPage() {
                 <p>Submitted: {new Date(report.createdAt).toLocaleString()}</p>
                 <p>
                   Case: {report.case ? `${report.case.status} (${report.case.priority} priority)` : 'Not assigned'}
+                </p>
+                <p>
+                  Assigned NGO:{' '}
+                  {report.case
+                    ? ngoNameById.get(report.case.assignedNgoId) ?? report.case.assignedNgoId
+                    : 'Pending super-admin assignment'}
                 </p>
               </div>
             </article>

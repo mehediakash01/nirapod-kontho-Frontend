@@ -29,10 +29,12 @@ import {
 import CreateNgoForm, { type CreateNgoFormValues } from '@/src/modules/super-admin/components/CreateNgoForm';
 import {
   assignNgoToReport,
+  getAssignmentRecommendations,
   createNgoWithAdmin,
   getAllNgos,
   getSuperAdminAnalytics,
   getVerifiedReports,
+  type AssignmentRecommendation,
   type ReportPriority,
 } from '@/src/modules/super-admin/services/super-admin.api';
 
@@ -41,6 +43,8 @@ const PRIORITIES: ReportPriority[] = ['LOW', 'MEDIUM', 'HIGH'];
 type AssignmentDraft = {
   ngoId: string;
   priority: ReportPriority;
+  assignmentRationale: string;
+  confirmAssignment: boolean;
 };
 
 type NgoSortKey = 'name' | 'createdAt' | 'openCases';
@@ -82,6 +86,13 @@ export default function SuperAdminDashboardPage() {
         email: values.email,
         phone: values.phone,
         address: values.address,
+        supportedReportTypes: values.supportedReportTypes,
+        coverageAreas: values.coverageAreasCsv
+          .split(',')
+          .map((item) => item.trim())
+          .filter(Boolean),
+        maxActiveCases: values.maxActiveCases,
+        priorityEscalationHours: values.priorityEscalationHours,
         admin: {
           name: values.adminName,
           email: values.adminEmail,
@@ -106,8 +117,23 @@ export default function SuperAdminDashboardPage() {
   });
 
   const assignMutation = useMutation({
-    mutationFn: ({ reportId, ngoId, priority }: { reportId: string; ngoId: string; priority: ReportPriority }) =>
-      assignNgoToReport(reportId, { ngoId, priority }),
+    mutationFn: ({
+      reportId,
+      ngoId,
+      priority,
+      assignmentRationale,
+    }: {
+      reportId: string;
+      ngoId: string;
+      priority: ReportPriority;
+      assignmentRationale: string;
+    }) =>
+      assignNgoToReport(reportId, {
+        ngoId,
+        priority,
+        assignmentRationale,
+        confirmAssignment: true,
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['verified-reports'] });
       queryClient.invalidateQueries({ queryKey: ['all-ngos'] });
@@ -130,6 +156,24 @@ export default function SuperAdminDashboardPage() {
     () => (reportsQuery.data ?? []).filter((report) => !report.case),
     [reportsQuery.data]
   );
+
+  const recommendationsQuery = useQuery({
+    queryKey: ['assignment-recommendations', unassignedReports.map((report) => report.id).join(',')],
+    queryFn: async () => {
+      const rows = await Promise.all(
+        unassignedReports.map(async (report) => {
+          const recommendations = await getAssignmentRecommendations(report.id);
+          return { reportId: report.id, recommendations };
+        })
+      );
+
+      return rows.reduce<Record<string, AssignmentRecommendation[]>>((acc, row) => {
+        acc[row.reportId] = row.recommendations;
+        return acc;
+      }, {});
+    },
+    enabled: unassignedReports.length > 0,
+  });
 
   const filteredAndSortedNgos = useMemo(() => {
     const filtered = (ngosQuery.data ?? []).filter((ngo) => {
@@ -170,7 +214,12 @@ export default function SuperAdminDashboardPage() {
 
   const updateDraft = (reportId: string, patch: Partial<AssignmentDraft>) => {
     setAssignmentDrafts((prev) => {
-      const current = prev[reportId] ?? { ngoId: '', priority: 'HIGH' as const };
+      const current = prev[reportId] ?? {
+        ngoId: '',
+        priority: 'HIGH' as const,
+        assignmentRationale: '',
+        confirmAssignment: false,
+      };
       return {
         ...prev,
         [reportId]: {
@@ -189,10 +238,21 @@ export default function SuperAdminDashboardPage() {
       return;
     }
 
+    if (!draft.assignmentRationale || draft.assignmentRationale.trim().length < 10) {
+      toast.error('Provide assignment rationale (at least 10 characters)');
+      return;
+    }
+
+    if (!draft.confirmAssignment) {
+      toast.error('Confirm assignment before submitting');
+      return;
+    }
+
     await assignMutation.mutateAsync({
       reportId,
       ngoId: draft.ngoId,
       priority: draft.priority,
+      assignmentRationale: draft.assignmentRationale.trim(),
     });
   };
 
@@ -362,6 +422,9 @@ export default function SuperAdminDashboardPage() {
 
           {reportsQuery.isLoading ? <p>Loading verified reports...</p> : null}
           {reportsQuery.error ? <p className="text-sm text-red-600">Failed to load reports.</p> : null}
+          {recommendationsQuery.isLoading ? (
+            <p className="text-sm text-muted-foreground">Calculating NGO recommendations...</p>
+          ) : null}
 
           {!reportsQuery.isLoading && !reportsQuery.error && !unassignedReports.length ? (
             <p className="rounded-xl border border-dashed p-4 text-sm text-muted-foreground">
@@ -371,7 +434,13 @@ export default function SuperAdminDashboardPage() {
 
           <div className="grid gap-4 lg:grid-cols-2">
             {unassignedReports.map((report) => {
-              const draft = assignmentDrafts[report.id] ?? { ngoId: '', priority: 'HIGH' as const };
+              const draft = assignmentDrafts[report.id] ?? {
+                ngoId: '',
+                priority: 'HIGH' as const,
+                assignmentRationale: '',
+                confirmAssignment: false,
+              };
+              const recommendations = recommendationsQuery.data?.[report.id] ?? [];
 
               return (
                 <article
@@ -389,8 +458,37 @@ export default function SuperAdminDashboardPage() {
                   </div>
 
                   <p className="mb-3 text-xs text-muted-foreground">
-                    {report.location} | {new Date(report.createdAt).toLocaleString()}
+                    {report.location} | Severity: {report.severity ?? 'N/A'} | {new Date(report.createdAt).toLocaleString()}
                   </p>
+
+                  {recommendations.length ? (
+                    <div className="mb-3 space-y-2 rounded-md border bg-muted/20 p-3">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        Top NGO Recommendations
+                      </p>
+
+                      {recommendations.slice(0, 3).map((item, index) => (
+                        <button
+                          key={item.ngoId}
+                          type="button"
+                          onClick={() =>
+                            updateDraft(report.id, {
+                              ngoId: item.ngoId,
+                              assignmentRationale: `Recommended rank #${index + 1}: ${item.reasons.join('; ')}`,
+                            })
+                          }
+                          className="flex w-full items-start justify-between rounded-md border bg-background px-3 py-2 text-left text-xs transition hover:border-primary/50"
+                        >
+                          <div>
+                            <p className="font-semibold text-primary">{item.ngoName}</p>
+                            <p className="mt-1 text-muted-foreground">{item.reasons[0]}</p>
+                            <p className="text-muted-foreground">{item.reasons[2]}</p>
+                          </div>
+                          <Badge variant={index === 0 ? 'default' : 'outline'}>Score {item.score}</Badge>
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
 
                   <div className="grid gap-2 sm:grid-cols-[1.2fr_0.8fr_auto]">
                     <select
@@ -429,6 +527,26 @@ export default function SuperAdminDashboardPage() {
                       <Handshake className="size-4" /> Assign
                     </Button>
                   </div>
+
+                  <textarea
+                    className="mt-2 min-h-20 w-full rounded-md border bg-background px-3 py-2 text-sm"
+                    placeholder="Assignment rationale (required): why this NGO is chosen for this report"
+                    value={draft.assignmentRationale}
+                    onChange={(event) =>
+                      updateDraft(report.id, { assignmentRationale: event.target.value })
+                    }
+                  />
+
+                  <label className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+                    <input
+                      type="checkbox"
+                      checked={draft.confirmAssignment}
+                      onChange={(event) =>
+                        updateDraft(report.id, { confirmAssignment: event.target.checked })
+                      }
+                    />
+                    I confirm this assignment is reviewed against type fit, urgency, and NGO capacity.
+                  </label>
                 </article>
               );
             })}

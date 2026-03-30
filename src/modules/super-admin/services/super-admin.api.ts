@@ -1,6 +1,12 @@
 import { api } from '@/src/services/api';
 
 export type ReportPriority = 'LOW' | 'MEDIUM' | 'HIGH';
+export type ReportType =
+  | 'HARASSMENT'
+  | 'DOMESTIC_VIOLENCE'
+  | 'STALKING'
+  | 'CORRUPTION'
+  | 'THREAT';
 
 export interface SuperAdminAnalytics {
   totalNgos: number;
@@ -20,6 +26,10 @@ export interface NgoItem {
   email: string;
   phone: string;
   address: string;
+  supportedReportTypes: ReportType[];
+  coverageAreas: string[];
+  maxActiveCases: number;
+  priorityEscalationHours: number;
   createdAt: string;
   cases: Array<{
     id: string;
@@ -32,6 +42,10 @@ export interface CreateNgoPayload {
   email: string;
   phone: string;
   address: string;
+  supportedReportTypes?: ReportType[];
+  coverageAreas?: string[];
+  maxActiveCases?: number;
+  priorityEscalationHours?: number;
   admin: {
     name: string;
     email: string;
@@ -41,9 +55,10 @@ export interface CreateNgoPayload {
 
 export interface VerifiedReport {
   id: string;
-  type: 'HARASSMENT' | 'DOMESTIC_VIOLENCE' | 'STALKING' | 'CORRUPTION' | 'THREAT';
+  type: ReportType;
   description: string;
   location: string;
+  severity: 'MILD' | 'MODERATE' | 'URGENT' | null;
   status: 'DRAFT' | 'SUBMITTED' | 'VERIFIED' | 'REJECTED';
   createdAt: string;
   case: {
@@ -57,6 +72,38 @@ export interface VerifiedReport {
 export interface AssignNgoPayload {
   ngoId: string;
   priority?: ReportPriority;
+  assignmentRationale: string;
+  confirmAssignment: true;
+}
+
+export interface AssignmentRecommendation {
+  ngoId: string;
+  ngoName: string;
+  score: number;
+  reasons: string[];
+  activeCases: number;
+  maxActiveCases: number;
+  priorityEscalationHours: number;
+  typeMatched: boolean;
+  coverageMatched: boolean;
+}
+
+export interface AssignmentAuditLog {
+  id: string;
+  actorUserId: string | null;
+  category: string;
+  action: string;
+  entityType: string;
+  entityId: string | null;
+  severity: 'INFO' | 'WARN' | 'ALERT' | string;
+  message: string;
+  rationale: string | null;
+  metadata: {
+    ngoId?: string;
+    caseId?: string;
+    priority?: ReportPriority;
+  } | null;
+  createdAt: string;
 }
 
 export const getSuperAdminAnalytics = async (): Promise<SuperAdminAnalytics> => {
@@ -83,5 +130,17 @@ export const getVerifiedReports = async (): Promise<VerifiedReport[]> => {
 
 export const assignNgoToReport = async (reportId: string, payload: AssignNgoPayload) => {
   const res = await api.patch(`/reports/${reportId}/assign`, payload);
+  return res.data.data;
+};
+
+export const getAssignmentRecommendations = async (
+  reportId: string
+): Promise<AssignmentRecommendation[]> => {
+  const res = await api.get(`/reports/${reportId}/recommendations`);
+  return res.data.data;
+};
+
+export const getAssignmentAuditLogs = async (): Promise<AssignmentAuditLog[]> => {
+  const res = await api.get('/reports/audit-logs/assignments');
   return res.data.data;
 };
