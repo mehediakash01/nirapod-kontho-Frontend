@@ -2,7 +2,21 @@
 
 import { useAuth } from '@/src/hooks/useAuth';
 import { cn } from '@/lib/utils';
-import { BarChart3, Bell, BriefcaseBusiness, CreditCard, LayoutGrid, ShieldCheck, Users, ClipboardCheck, History } from 'lucide-react';
+import {
+  BarChart3,
+  Bell,
+  BriefcaseBusiness,
+  CreditCard,
+  FileCheck2,
+  LayoutGrid,
+  ScrollText,
+  Settings2,
+  ShieldCheck,
+  UserCog,
+  Users,
+  ClipboardCheck,
+  History,
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
@@ -32,8 +46,14 @@ const menu: Record<string, MenuItem[]> = {
   ],
   NGO_ADMIN: [{ name: 'My Cases', path: '/dashboard/ngo', icon: BriefcaseBusiness }],
   SUPER_ADMIN: [
-    { name: 'Manage NGOs', path: '/dashboard/super-admin', icon: Users },
-    { name: 'Payment Dashboard', path: '/dashboard/super-admin/payments', icon: BarChart3 },
+    { name: 'Dashboard', path: '/dashboard/super-admin', icon: LayoutGrid },
+    { name: 'Manage NGOs', path: '/dashboard/super-admin/ngos', icon: Users },
+    { name: 'Manage Users', path: '/dashboard/super-admin/users', icon: UserCog },
+    { name: 'Verified Reports', path: '/dashboard/super-admin/reports', icon: FileCheck2 },
+    { name: 'Audit Logs', path: '/dashboard/super-admin/audit-logs', icon: ScrollText },
+    { name: 'Analytics', path: '/dashboard/super-admin/analytics', icon: BarChart3 },
+    { name: 'Payment & Donations', path: '/dashboard/super-admin/payments', icon: CreditCard },
+    { name: 'Platform Settings', path: '/dashboard/super-admin/settings', icon: Settings2 },
   ],
 };
 
@@ -66,14 +86,15 @@ export default function Sidebar({
             href={item.path}
             onClick={onNavigate}
             className={cn(
-              'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all',
+              'group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all',
               isActive
                 ? 'bg-sidebar-accent text-sidebar-accent-foreground shadow-sm'
-                : 'text-sidebar-foreground/80 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground'
+                : 'text-sidebar-foreground/80 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground hover:pl-3.5'
             )}
           >
             <Icon className="h-4 w-4 shrink-0" />
             <span>{item.name}</span>
+            {isActive ? <span className="absolute inset-y-1 left-0 w-1 rounded-full bg-primary" /> : null}
           </Link>
         );
       })}
