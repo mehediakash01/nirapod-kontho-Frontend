@@ -25,6 +25,8 @@ export default function DashboardNavbar({ onMenuClick }: DashboardNavbarProps) {
   const title = useMemo(() => {
     if (pathname.startsWith('/dashboard/super-admin/payments')) return 'Payment Dashboard';
     if (pathname.startsWith('/dashboard/super-admin')) return 'NGO Management';
+    if (pathname.startsWith('/dashboard/moderator/reviewed')) return 'Reviewed Reports';
+    if (pathname.startsWith('/dashboard/moderator/pending')) return 'Pending Verification Queue';
     if (pathname.startsWith('/dashboard/moderator')) return 'Moderator Panel';
     if (pathname.startsWith('/dashboard/ngo')) return 'NGO Cases';
     if (pathname.startsWith('/dashboard/user/reports')) return 'My Reports';

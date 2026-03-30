@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/src/hooks/useAuth';
 import { cn } from '@/lib/utils';
-import { BarChart3, Bell, BriefcaseBusiness, CreditCard, LayoutGrid, ShieldCheck, Users } from 'lucide-react';
+import { BarChart3, Bell, BriefcaseBusiness, CreditCard, LayoutGrid, ShieldCheck, Users, ClipboardCheck, History } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
@@ -25,7 +25,11 @@ const menu: Record<string, MenuItem[]> = {
     { name: 'Notifications', path: '/dashboard/user/notifications', icon: Bell },
     { name: 'Donations', path: '/dashboard/user/donations', icon: CreditCard },
   ],
-  MODERATOR: [{ name: 'Pending Reports', path: '/dashboard/moderator', icon: ShieldCheck }],
+  MODERATOR: [
+    { name: 'Overview', path: '/dashboard/moderator', icon: LayoutGrid },
+    { name: 'Pending Reports', path: '/dashboard/moderator/pending', icon: ClipboardCheck },
+    { name: 'Reviewed Reports', path: '/dashboard/moderator/reviewed', icon: History },
+  ],
   NGO_ADMIN: [{ name: 'My Cases', path: '/dashboard/ngo', icon: BriefcaseBusiness }],
   SUPER_ADMIN: [
     { name: 'Manage NGOs', path: '/dashboard/super-admin', icon: Users },
@@ -43,11 +47,18 @@ export default function Sidebar({
   const role = data?.role;
   const items = menu[role as keyof typeof menu] ?? [];
 
-  const SidebarNav = ({ onNavigate }: { onNavigate?: () => void }) => (
+  const renderSidebarNav = (onNavigate?: () => void) => (
     <nav className="space-y-1">
       {items.map((item) => {
         const Icon = item.icon;
-        const isActive = pathname === item.path || pathname.startsWith(`${item.path}/`);
+        const isExact = pathname === item.path;
+        const hasMoreSpecificMatch = items.some(
+          (candidate) =>
+            candidate.path !== item.path &&
+            pathname.startsWith(`${candidate.path}/`) &&
+            candidate.path.length > item.path.length
+        );
+        const isActive = isExact || (!hasMoreSpecificMatch && pathname.startsWith(`${item.path}/`));
 
         return (
           <Link
@@ -80,7 +91,7 @@ export default function Sidebar({
           <h2 className="mt-1 text-xl font-bold text-sidebar-primary">Dashboard</h2>
         </div>
 
-        <SidebarNav />
+        {renderSidebarNav()}
       </aside>
 
       <Sheet open={mobileOpen} onOpenChange={onMobileOpenChange}>
@@ -90,7 +101,7 @@ export default function Sidebar({
           </SheetHeader>
 
           <div className="p-4">
-            <SidebarNav onNavigate={() => onMobileOpenChange(false)} />
+              {renderSidebarNav(() => onMobileOpenChange(false))}
           </div>
         </SheetContent>
       </Sheet>
