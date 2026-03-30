@@ -14,53 +14,69 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Generate unique tab ID
+const TAB_ID = typeof window !== 'undefined' ? `tab_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` : '';
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [lastSessionId, setLastSessionId] = useState<string | null>(null);
 
   const fetchSession = useCallback(async () => {
     try {
       setIsLoading(true);
-      let response;
+      
+      // Add timestamp to force fresh data and prevent caching
+      const timestamp = Date.now();
+      const response = await api.get('/auth/session', {
+        params: { t: timestamp },
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'X-Tab-ID': TAB_ID,
+        },
+      });
 
-      // Try OAuth session endpoint first (for OAuth-authenticated users)
-      try {
-        response = await api.get('/oauth/session');
-        const sessionUser = response.data?.user ?? response.data?.data?.user;
-        if (sessionUser) {
-          setUser(sessionUser);
-          return;
+      const sessionUser = response.data?.user ?? response.data?.data?.user;
+      const sessionId = response.data?.data?.session?.id || response.data?.session?.id;
+
+      if (sessionUser) {
+        // Only update if session ID changed (prevents cross-tab contamination)
+        if (lastSessionId !== sessionId) {
+          setLastSessionId(sessionId || null);
         }
-      } catch (oauthError) {
-        console.log('OAuth session not found, trying auth endpoint...');
+        setUser(sessionUser);
+      } else {
+        setUser(null);
+        setLastSessionId(null);
       }
-
-      // Fall back to regular auth session endpoint (for email/password users)
-      try {
-        response = await api.get('/auth/session');
-        const sessionUser = response.data?.user ?? response.data?.data?.user;
-        if (sessionUser) {
-          setUser(sessionUser);
-          return;
-        }
-      } catch (authError) {
-        console.log('Auth session not found');
-      }
-
-      // No session found
-      setUser(null);
     } catch (error) {
-      console.error('Session fetch error:', error);
+      console.log('Session not found or expired');
       setUser(null);
+      setLastSessionId(null);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [lastSessionId]);
 
   const logout = async () => {
     try {
-      await api.post('/auth/sign-out');
+      // Clear user state first
       setUser(null);
+      setLastSessionId(null);
+
+      // Then try to sign out from backend
+      try {
+        await api.post('/auth/sign-out', {}, {
+          headers: {
+            'X-Tab-ID': TAB_ID,
+          },
+        });
+      } catch (error) {
+        console.error('Backend sign-out error:', error);
+        // Continue with client-side logout even if backend fails
+      }
+
       toast.success('Logged out successfully');
     } catch (error) {
       console.error('Logout error:', error);
@@ -69,8 +85,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Fetch session on mount
   useEffect(() => {
     fetchSession();
+  }, [fetchSession]);
+
+  // Detect visibility changes (tab focus)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        // Tab became visible, refresh session to detect any changes
+        console.log('Tab became visible, refreshing session...');
+        fetchSession();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [fetchSession]);
 
   return (
