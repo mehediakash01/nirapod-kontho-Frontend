@@ -2,12 +2,9 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { getMyDonations } from '@/src/modules/payment/services/payment.api';
 
 export default function DonationSuccessPage() {
-  const searchParams = useSearchParams();
-  const sessionId = searchParams.get('session_id');
   const [status, setStatus] = useState<'loading' | 'success' | 'pending' | 'error'>('loading');
   const [amount, setAmount] = useState<number | null>(null);
 

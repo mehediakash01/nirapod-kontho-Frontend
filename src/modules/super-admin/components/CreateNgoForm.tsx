@@ -28,7 +28,8 @@ const createNgoSchema = z.object({
   priorityEscalationHours: z.coerce.number().int().min(1).max(168).optional(),
 });
 
-export type CreateNgoFormValues = z.infer<typeof createNgoSchema>;
+export type CreateNgoFormInput = z.input<typeof createNgoSchema>;
+export type CreateNgoFormValues = z.output<typeof createNgoSchema>;
 
 interface CreateNgoFormProps {
   onSubmit: (values: CreateNgoFormValues) => Promise<void>;
@@ -41,7 +42,7 @@ export default function CreateNgoForm({ onSubmit, isSubmitting }: CreateNgoFormP
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<CreateNgoFormValues>({
+  } = useForm<CreateNgoFormInput, unknown, CreateNgoFormValues>({
     resolver: zodResolver(createNgoSchema),
     defaultValues: {
       name: '',

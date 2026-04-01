@@ -51,7 +51,12 @@ function RecenterMap({ latitude, longitude }: { latitude?: number; longitude?: n
   const map = useMap();
 
   useEffect(() => {
-    if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+    if (
+      typeof latitude === 'number' &&
+      Number.isFinite(latitude) &&
+      typeof longitude === 'number' &&
+      Number.isFinite(longitude)
+    ) {
       map.setView([latitude, longitude], Math.max(map.getZoom(), 15));
     }
   }, [latitude, longitude, map]);
@@ -112,8 +117,14 @@ export default function LocationMapPicker({
 
   const markerPosition = useMemo(
     () => ({
-      lat: Number.isFinite(latitude) ? latitude : SYLHET_CENTER.lat,
-      lng: Number.isFinite(longitude) ? longitude : SYLHET_CENTER.lng,
+      lat:
+        typeof latitude === 'number' && Number.isFinite(latitude)
+          ? latitude
+          : SYLHET_CENTER.lat,
+      lng:
+        typeof longitude === 'number' && Number.isFinite(longitude)
+          ? longitude
+          : SYLHET_CENTER.lng,
     }),
     [latitude, longitude]
   );
@@ -160,7 +171,12 @@ export default function LocationMapPicker({
               variant="outline"
               className="h-11"
               onClick={() => {
-                if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+                if (
+                  typeof latitude === 'number' &&
+                  Number.isFinite(latitude) &&
+                  typeof longitude === 'number' &&
+                  Number.isFinite(longitude)
+                ) {
                   updateFromCoordinates(latitude, longitude);
                 }
               }}

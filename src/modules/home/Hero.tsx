@@ -3,10 +3,16 @@
 import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Shield, CheckCircle2, Zap, Bell, MapPin, Clock, Users, ChevronRight } from 'lucide-react';
-import { useRef } from 'react';
+import { useRef, type ReactNode } from 'react';
+
+type FloatingCardProps = {
+  delay: number;
+  className?: string;
+  children: ReactNode;
+};
 
 // Floating notification card component
-function FloatingCard({ delay, className, children }) {
+function FloatingCard({ delay, className, children }: FloatingCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.9 }}

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { createReport } from '../services/report.api';
+import { createReport, type CreateReportRequest } from '../services/report.api';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
@@ -268,7 +268,7 @@ export default function CreateReportForm() {
       });
 
       // Create report payload with Cloudinary URLs (not files)
-      const reportPayload: CreateReportPayload & { voiceNoteUrl?: string; evidenceFiles?: Array<{ fileUrl: string; fileType: string }> } = {
+      const reportPayload: CreateReportRequest = {
         type: data.type,
         description: data.description,
         location: data.location,
@@ -281,7 +281,7 @@ export default function CreateReportForm() {
         evidenceFiles: evidenceUrls.length > 0 ? evidenceUrls : undefined,
       };
 
-      await createReport(reportPayload as CreateReportPayload);
+      await createReport(reportPayload);
       toast.success('Report submitted successfully');
       router.push('/dashboard/user/reports');
     } catch {

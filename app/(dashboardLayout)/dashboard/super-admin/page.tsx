@@ -87,7 +87,7 @@ export default function SuperAdminDashboardPage() {
         phone: values.phone,
         address: values.address,
         supportedReportTypes: values.supportedReportTypes,
-        coverageAreas: values.coverageAreasCsv
+        coverageAreas: (values.coverageAreasCsv ?? '')
           .split(',')
           .map((item) => item.trim())
           .filter(Boolean),
