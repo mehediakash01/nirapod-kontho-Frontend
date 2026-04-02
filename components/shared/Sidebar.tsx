@@ -113,12 +113,12 @@ export default function Sidebar({
   return (
     <>
       <aside className="sticky top-0 hidden h-screen w-72 shrink-0 border-r border-sidebar-border bg-sidebar/95 p-4 lg:flex lg:flex-col">
-        <div className="mb-8 rounded-2xl border border-sidebar-border bg-sidebar px-4 py-5 shadow-sm">
+        <Link href="/" className="mb-8 rounded-2xl border border-sidebar-border bg-sidebar px-4 py-5 shadow-sm transition-colors hover:bg-sidebar-accent/40">
           <p className="text-xs font-medium uppercase tracking-wider text-sidebar-foreground/60">
             Nirapod Kontho
           </p>
           <h2 className="mt-1 text-xl font-bold text-sidebar-primary">Dashboard</h2>
-        </div>
+        </Link>
 
         {renderSidebarNav()}
       </aside>
@@ -126,7 +126,11 @@ export default function Sidebar({
       <Sheet open={mobileOpen} onOpenChange={onMobileOpenChange}>
         <SheetContent side="left" className="w-74 border-sidebar-border bg-sidebar p-0" showCloseButton>
           <SheetHeader className="border-b border-sidebar-border px-5 py-4">
-            <SheetTitle className="text-left text-base text-sidebar-primary">Nirapod Dashboard</SheetTitle>
+            <SheetTitle className="text-left text-base text-sidebar-primary">
+              <Link href="/" onClick={() => onMobileOpenChange(false)} className="transition-colors hover:text-sidebar-accent-foreground">
+                Nirapod Dashboard
+              </Link>
+            </SheetTitle>
           </SheetHeader>
 
           <div className="p-4">
