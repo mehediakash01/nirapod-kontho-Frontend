@@ -31,8 +31,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await api.get('/auth/session', {
         params: { t: timestamp },
         headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
           'X-Tab-ID': TAB_ID,
         },
       });
