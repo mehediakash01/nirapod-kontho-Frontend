@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -9,7 +9,7 @@ import { CircleAlert, Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 import { loginSchema } from '../validation';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { loginUser } from '../service';
 import { useAuth } from '@/src/providers/AuthContext';
 import { initiateGoogleAuthFlow } from '../utils/oauth';
@@ -36,6 +36,7 @@ type ApiErrorShape = {
 
 function LoginFormContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { refetchSession } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -48,6 +49,39 @@ function LoginFormContent() {
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
   });
+
+  // Handle OAuth callback redirect
+  useEffect(() => {
+    const oauthSuccess = searchParams.get('oauth_success');
+    const error = searchParams.get('error');
+
+    if (error) {
+      const details = searchParams.get('details');
+      toast.error(`OAuth login failed: ${details || error}`);
+      return;
+    }
+
+    if (oauthSuccess === 'true') {
+      // Session should already be set by the backend redirect
+      // Give it a moment to ensure cookies are set, then fetch session
+      const timer = setTimeout(async () => {
+        try {
+          const sessionUser = await refetchSession();
+          if (sessionUser) {
+            toast.success('Signed in successfully');
+            router.push('/dashboard');
+          } else {
+            toast.error('Failed to establish session. Please sign in again.');
+          }
+        } catch (err) {
+          console.error('Session fetch error after OAuth:', err);
+          toast.error('Failed to verify session. Please sign in again.');
+        }
+      }, 500); // Small delay to ensure cookies are ready
+
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams, refetchSession, router]);
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
