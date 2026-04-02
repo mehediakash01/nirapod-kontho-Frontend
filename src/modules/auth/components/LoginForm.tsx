@@ -62,26 +62,12 @@ function LoginFormContent() {
     }
 
     if (oauthSuccess === 'true') {
-      // Session should already be set by the backend redirect
-      // Give it a moment to ensure cookies are set, then fetch session
-      const timer = setTimeout(async () => {
-        try {
-          const sessionUser = await refetchSession();
-          if (sessionUser) {
-            toast.success('Signed in successfully');
-            router.push('/dashboard');
-          } else {
-            toast.error('Failed to establish session. Please sign in again.');
-          }
-        } catch (err) {
-          console.error('Session fetch error after OAuth:', err);
-          toast.error('Failed to verify session. Please sign in again.');
-        }
-      }, 500); // Small delay to ensure cookies are ready
-
-      return () => clearTimeout(timer);
+      // Backend has set the session cookie and we've received the redirect.
+      // The session will be loaded when AuthContext.fetchSession() is called
+      // on the dashboard page load. Just redirect immediately.
+      router.push('/dashboard');
     }
-  }, [searchParams, refetchSession, router]);
+  }, [searchParams, router]);
 
   const onSubmit = async (data: LoginFormValues) => {
     try {

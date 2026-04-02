@@ -25,19 +25,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       // Add timestamp to force fresh data and prevent caching
       const timestamp = Date.now();
-      // Try OAuth session endpoint first (handles custom auth-token cookie from Google OAuth)
-      // Otherwise fall back to original working endpoint
-      let response;
-      try {
-        response = await api.get('/oauth/session', {
-          params: { t: timestamp },
-        });
-      } catch (oauthError) {
-        // Fall back to original endpoint that was working for email/password login
-        response = await api.get('/auth/get-session', {
-          params: { t: timestamp },
-        });
-      }
+      
+      // Use the main better-auth session endpoint
+      const response = await api.get('/auth/session', {
+        params: { t: timestamp },
+      });
 
       const sessionUser = response.data?.user ?? response.data?.data?.user;
       const sessionId = response.data?.data?.session?.id || response.data?.session?.id;
