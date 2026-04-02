@@ -22,22 +22,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchSession = useCallback(async (): Promise<User | null> => {
     try {
       setIsLoading(true);
-      
-      // Add timestamp to force fresh data and prevent caching
+
+      // Use the session bridge that understands both the custom OAuth
+      // cookie and better-auth's session cookie.
       const timestamp = Date.now();
-      
-      // Try OAuth session endpoint first (for custom auth-token from Google OAuth)
-      let response;
-      try {
-        response = await api.get('/oauth/session', {
-          params: { t: timestamp },
-        });
-      } catch {
-        // Fall back to better-auth session endpoint (for email/password login)
-        response = await api.get('/auth/session', {
-          params: { t: timestamp },
-        });
-      }
+      const response = await api.get('/oauth/session', {
+        params: { t: timestamp },
+      });
 
       const sessionUser = response.data?.user ?? response.data?.data?.user;
       const sessionId = response.data?.data?.session?.id || response.data?.session?.id;

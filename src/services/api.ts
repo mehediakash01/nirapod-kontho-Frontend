@@ -16,7 +16,11 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const requestUrl = String(error.config?.url || '');
+    const isSessionProbe =
+      requestUrl.includes('/oauth/session') || requestUrl.includes('/auth/session');
+
+    if (error.response?.status === 401 && !isSessionProbe) {
       // Session expired or invalid
       console.log('Session expired');
     }
