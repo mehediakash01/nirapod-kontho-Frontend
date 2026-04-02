@@ -16,15 +16,3 @@ export async function initiateGoogleAuthFlow() {
     throw error;
   }
 }
-
-export async function handleOAuthCallback() {
-  // This is typically handled by better-auth automatically
-  // but we can use this function for any custom post-auth logic
-  try {
-    const response = await api.get('/auth/session');
-    return response.data;
-  } catch (error) {
-    console.error('Failed to get session after OAuth:', error);
-    throw error;
-  }
-}

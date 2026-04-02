@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, Suspense, useEffect } from 'react';
+import { useState, Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -9,7 +9,7 @@ import { CircleAlert, Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 import { loginSchema } from '../validation';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { loginUser } from '../service';
 import { useAuth } from '@/src/providers/AuthContext';
 import { initiateGoogleAuthFlow } from '../utils/oauth';
@@ -36,7 +36,6 @@ type ApiErrorShape = {
 
 function LoginFormContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { refetchSession } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -49,25 +48,6 @@ function LoginFormContent() {
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
   });
-
-  // Handle OAuth callback redirect
-  useEffect(() => {
-    const oauthSuccess = searchParams.get('oauth_success');
-    const error = searchParams.get('error');
-
-    if (error) {
-      const details = searchParams.get('details');
-      toast.error(`OAuth login failed: ${details || error}`);
-      return;
-    }
-
-    if (oauthSuccess === 'true') {
-      // Backend has set the session cookie and we've received the redirect.
-      // The session will be loaded when AuthContext.fetchSession() is called
-      // on the dashboard page load. Just redirect immediately.
-      router.push('/dashboard');
-    }
-  }, [searchParams, router]);
 
   const onSubmit = async (data: LoginFormValues) => {
     try {

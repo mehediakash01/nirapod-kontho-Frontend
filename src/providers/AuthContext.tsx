@@ -22,11 +22,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchSession = useCallback(async (): Promise<User | null> => {
     try {
       setIsLoading(true);
-
-      // Use the session bridge that understands both the custom OAuth
-      // cookie and better-auth's session cookie.
+      
+      // Add timestamp to force fresh data and prevent caching
       const timestamp = Date.now();
-      const response = await api.get('/oauth/session', {
+      const response = await api.get('/auth/session', {
         params: { t: timestamp },
       });
 
