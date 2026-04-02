@@ -1,7 +1,19 @@
 import type { NextConfig } from "next";
 
+const backendApiUrl =
+  process.env.API_PROXY_TARGET?.trim().replace(/\/$/, "") ||
+  process.env.NEXT_PUBLIC_API_URL?.trim().replace(/\/$/, "") ||
+  "http://localhost:5000/api";
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${backendApiUrl}/:path*`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
