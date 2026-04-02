@@ -51,9 +51,10 @@ export default function RegisterForm() {
   const onSubmit = async (data: RegisterFormValues) => {
     try {
       await registerUser(data);
-      // Small delay to ensure token is stored
-      await new Promise(resolve => setTimeout(resolve, 100));
-      await refetchSession();
+      const sessionUser = await refetchSession();
+      if (!sessionUser) {
+        throw new Error('Unable to verify session after sign up');
+      }
       toast.success('Account created successfully');
       router.push('/dashboard');
     } catch (err: unknown) {
@@ -63,6 +64,8 @@ export default function RegisterForm() {
         'response' in err &&
         typeof (err as ApiErrorShape).response?.data?.message === 'string'
           ? (err as ApiErrorShape).response?.data?.message
+          : err instanceof Error
+            ? err.message
           : 'Register failed';
       toast.error(message);
     }

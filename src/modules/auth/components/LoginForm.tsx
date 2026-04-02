@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -36,7 +36,7 @@ type ApiErrorShape = {
 
 function LoginFormContent() {
   const router = useRouter();
-  const { refetchSession, user } = useAuth();
+  const { refetchSession } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [oauthLoading, setOauthLoading] = useState(false);
@@ -52,9 +52,10 @@ function LoginFormContent() {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       await loginUser(data);
-      // Small delay to ensure token is stored
-      await new Promise(resolve => setTimeout(resolve, 100));
-      await refetchSession();
+      const sessionUser = await refetchSession();
+      if (!sessionUser) {
+        throw new Error('Unable to verify session after sign in');
+      }
       toast.success('Signed in successfully');
       router.push('/dashboard');
     } catch (err: unknown) {
@@ -64,6 +65,8 @@ function LoginFormContent() {
         'response' in err &&
         typeof (err as ApiErrorShape).response?.data?.message === 'string'
           ? (err as ApiErrorShape).response?.data?.message
+          : err instanceof Error
+            ? err.message
           : 'Sign in failed';
       toast.error(message);
     }

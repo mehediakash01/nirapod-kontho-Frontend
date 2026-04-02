@@ -9,7 +9,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   logout: () => Promise<void>;
-  refetchSession: () => Promise<void>;
+  refetchSession: () => Promise<User | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,13 +19,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [lastSessionId, setLastSessionId] = useState<string | null>(null);
 
-  const fetchSession = useCallback(async () => {
+  const fetchSession = useCallback(async (): Promise<User | null> => {
     try {
       setIsLoading(true);
       
       // Add timestamp to force fresh data and prevent caching
       const timestamp = Date.now();
-      const response = await api.get('/auth/session', {
+      const response = await api.get('/auth/get-session', {
         params: { t: timestamp },
       });
 
@@ -38,14 +38,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setLastSessionId(sessionId || null);
         }
         setUser(sessionUser);
+        return sessionUser;
       } else {
         setUser(null);
         setLastSessionId(null);
+        return null;
       }
-    } catch (error) {
+    } catch {
       console.log('Session not found or expired');
       setUser(null);
       setLastSessionId(null);
+      return null;
     } finally {
       setIsLoading(false);
     }
