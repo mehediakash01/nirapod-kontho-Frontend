@@ -14,9 +14,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Generate unique tab ID
-const TAB_ID = typeof window !== 'undefined' ? `tab_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` : '';
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,9 +27,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const timestamp = Date.now();
       const response = await api.get('/auth/session', {
         params: { t: timestamp },
-        headers: {
-          'X-Tab-ID': TAB_ID,
-        },
       });
 
       const sessionUser = response.data?.user ?? response.data?.data?.user;
@@ -65,11 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Then try to sign out from backend
       try {
-        await api.post('/auth/sign-out', {}, {
-          headers: {
-            'X-Tab-ID': TAB_ID,
-          },
-        });
+        await api.post('/auth/sign-out', {});
       } catch (error) {
         console.error('Backend sign-out error:', error);
         // Continue with client-side logout even if backend fails
