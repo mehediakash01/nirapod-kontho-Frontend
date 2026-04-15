@@ -2,20 +2,26 @@
 
 
 import { useAuth } from '@/src/hooks/useAuth';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function DashboardRedirect() {
   const { data, isLoading, refetch } = useAuth();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [isRefetching, setIsRefetching] = useState(false);
   const [oauthRetryCount, setOauthRetryCount] = useState(0);
-  const oauthSuccess = searchParams.get('oauth_success') === 'true';
+  const [oauthSuccess, setOauthSuccess] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOauthSuccess(new URLSearchParams(window.location.search).get('oauth_success') === 'true');
+  }, []);
 
   // Handle OAuth callback - trigger session refetch
   useEffect(() => {
     if (oauthSuccess && !isLoading && !data && !isRefetching && oauthRetryCount < 3) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsRefetching(true);
       // Refetch session after OAuth redirect
       refetch()
