@@ -25,7 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       // Add timestamp to force fresh data and prevent caching
       const timestamp = Date.now();
-      const response = await api.get('/auth/session', {
+      const response = await api.get('/oauth/session', {
         params: { t: timestamp },
       });
 
@@ -62,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Then try to sign out from backend
       try {
-        await api.post('/auth/sign-out', {});
+        await api.post('/oauth/sign-out', {});
       } catch (error) {
         console.error('Backend sign-out error:', error);
         // Continue with client-side logout even if backend fails
