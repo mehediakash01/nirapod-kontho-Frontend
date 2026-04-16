@@ -4,18 +4,14 @@ const normalizedApiUrl = process.env.NEXT_PUBLIC_API_URL?.trim().replace(/\/$/, 
 const isLocalFrontendHost =
   typeof window !== 'undefined' &&
   (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-const isVercelProdFrontend =
-  typeof window !== 'undefined' &&
-  window.location.hostname === 'nirapod-kontho-frontend.vercel.app';
 const localFallbackApiUrl = 'http://localhost:5000/api';
-const productionFallbackApiUrl = 'https://nirapod-kontho-backend.vercel.app/api';
+const proxyApiUrl = '/api';
 const resolvedBaseURL =
-  normalizedApiUrl ||
-  (isVercelProdFrontend
-    ? productionFallbackApiUrl
-    : isLocalFrontendHost
-      ? localFallbackApiUrl
-      : '/api');
+  typeof window !== 'undefined'
+    ? isLocalFrontendHost
+      ? normalizedApiUrl || localFallbackApiUrl
+      : proxyApiUrl
+    : normalizedApiUrl || proxyApiUrl;
 
 export const api = axios.create({
   baseURL: resolvedBaseURL,

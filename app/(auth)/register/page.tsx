@@ -1,5 +1,6 @@
 import RegisterForm from "@/src/modules/auth/components/RegisterForm";
 import Link from 'next/link';
+import Image from 'next/image';
 import { ShieldPlus, BadgeCheck, ArrowRight, CheckCircle2, Zap, Users } from 'lucide-react';
 
 const benefits = [
@@ -67,7 +68,14 @@ export default function RegisterPage() {
             {/* Mobile logo */}
             <div className="flex items-center gap-2.5 mb-10 md:hidden">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
-                <span className="text-xs font-black text-white">NK</span>
+                <Image
+                  src="/nirapod-kontho.png"
+                  alt="Nirapod Kontho"
+                  width={24}
+                  height={24}
+                  className="h-6 w-6 object-contain"
+                  priority
+                />
               </div>
               <span className="text-sm font-bold uppercase tracking-[0.14em] text-primary">Nirapod Kontho</span>
             </div>
@@ -108,7 +116,14 @@ export default function RegisterPage() {
             {/* Logo */}
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 border border-white/20">
-                <span className="text-sm font-black text-white">NK</span>
+                <Image
+                  src="/nirapod-kontho.png"
+                  alt="Nirapod Kontho"
+                  width={28}
+                  height={28}
+                  className="h-7 w-7 object-contain"
+                  priority
+                />
               </div>
               <span className="text-sm font-bold uppercase tracking-[0.14em] text-white/70">Nirapod Kontho</span>
             </div>

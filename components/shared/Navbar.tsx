@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { motion } from 'framer-motion';
@@ -81,7 +82,14 @@ export default function Navbar() {
               whileHover={{ scale: 1.05 }}
               className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow"
             >
-              <span className="text-white font-bold text-lg">NK</span>
+              <Image
+                src="/nirapod-kontho.png"
+                alt="Nirapod Kontho"
+                width={28}
+                height={28}
+                className="h-7 w-7 object-contain"
+                priority
+              />
             </motion.div>
             <span className="text-lg sm:text-xl font-bold text-foreground hidden sm:inline group-hover:text-primary transition-colors">
               Nirapod Kontho

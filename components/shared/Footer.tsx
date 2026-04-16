@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Mail, Phone, MapPin, ArrowRight, Shield, CheckCircle2, Lock } from 'lucide-react';
 
 const quickLinks = [
@@ -77,7 +78,13 @@ export default function Footer() {
           <div className="space-y-6">
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/15 bg-white/10 backdrop-blur-sm">
-                <span className="text-sm font-black text-white">NK</span>
+                <Image
+                  src="/nirapod-kontho.png"
+                  alt="Nirapod Kontho"
+                  width={30}
+                  height={30}
+                  className="h-7 w-7 object-contain"
+                />
               </div>
               <div>
                 <p className="text-base font-black text-white">Nirapod Kontho</p>

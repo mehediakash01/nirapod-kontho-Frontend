@@ -22,11 +22,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchSession = useCallback(async (): Promise<User | null> => {
     try {
       setIsLoading(true);
-      
+
       // Add timestamp to force fresh data and prevent caching
       const timestamp = Date.now();
+      const handoffCode =
+        typeof window !== 'undefined'
+          ? new URLSearchParams(window.location.search).get('oauth_handoff')
+          : null;
       const response = await api.get('/oauth/session', {
-        params: { t: timestamp },
+        params: {
+          t: timestamp,
+          ...(handoffCode ? { handoff: handoffCode } : {}),
+        },
       });
 
       const sessionUser = response.data?.user ?? response.data?.data?.user;

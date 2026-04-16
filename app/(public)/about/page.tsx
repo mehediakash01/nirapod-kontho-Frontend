@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import {
   Shield, Eye, GitBranch, Users, CheckCircle2, Zap,
@@ -107,7 +108,14 @@ export default function AboutPage() {
             aria-hidden
             className="pointer-events-none absolute -right-4 -top-10 select-none text-[clamp(8rem,20vw,14rem)] font-black leading-none text-primary/[0.04] lg:block hidden"
           >
-            NK
+            <Image
+              src="/nirapod-kontho.png"
+              alt=""
+              width={240}
+              height={240}
+              className="h-[clamp(8rem,20vw,14rem)] w-[clamp(8rem,20vw,14rem)] object-contain opacity-70"
+              priority
+            />
           </div>
 
           <div className="lg:grid lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">
