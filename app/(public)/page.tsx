@@ -1,4 +1,5 @@
 import CTA from "@/src/modules/home/CTA";
+import EvidenceGrid from "@/src/modules/home/EvidenceGrid";
 import FAQ from "@/src/modules/home/FAQ";
 import Helpline from "@/src/modules/home/Helpline";
 import Hero from "@/src/modules/home/Hero";
@@ -17,13 +18,14 @@ export const metadata = {
 
 export default function HomePage() {
   return (
-    <main className="bg-neutral text-gray-800">
+    <main className="bg-background text-foreground">
       <Hero />
       <TrustBar />
       <PlatformScope />
       <HowItWorks />
       <SafetyCommitment />
       <Impact />
+      <EvidenceGrid />
       <Stories />
       <FAQ />
       <Helpline />

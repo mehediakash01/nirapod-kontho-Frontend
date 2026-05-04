@@ -51,7 +51,7 @@ export default function TrustBar() {
                 viewport={{ once: true, amount: 0.5 }}
                 transition={{ delay: index * 0.08, duration: 0.45 }}
                 whileHover={{ y: -6 }}
-                className="group relative rounded-2xl border border-primary/10 bg-gradient-to-br from-white via-white to-muted/30 p-6 shadow-sm transition-all hover:border-primary/20 hover:shadow-md"
+                className="group relative rounded-2xl border border-primary/10  p-6 shadow-sm transition-all hover:border-primary/20 hover:shadow-md"
               >
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition group-hover:opacity-100" />
                 

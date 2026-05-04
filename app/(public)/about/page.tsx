@@ -85,7 +85,7 @@ export default function AboutPage() {
 
       {/* ── Global background ─────────────────────────────────────────────── */}
       <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-white via-primary/[0.025] to-secondary/[0.04]" />
+        <div className="absolute inset-0 " />
         <div className="absolute -left-60 top-0 h-[600px] w-[600px] rounded-full bg-primary/8 blur-[120px]" />
         <div className="absolute right-0 top-40 h-[500px] w-[500px] rounded-full bg-secondary/8 blur-[120px]" />
         <div
@@ -223,7 +223,7 @@ export default function AboutPage() {
                     <p className={`text-[10px] font-bold uppercase tracking-[0.16em] ${p.accent} mb-2`}>
                       {p.label}
                     </p>
-                    <h2 className="text-lg font-bold text-foreground leading-snug mb-3">{p.headline}</h2>
+                    <h2 className="text-lg font-bold text-black leading-snug mb-3">{p.headline}</h2>
                     <p className="text-sm leading-relaxed text-muted-foreground">{p.body}</p>
 
                     {/* Hover bottom border */}
@@ -304,13 +304,13 @@ export default function AboutPage() {
               const Icon = v.icon;
               return (
                 <FadeUp key={v.title} delay={i * 0.08}>
-                  <div className="group flex gap-4 rounded-2xl border border-primary/8 bg-white/70 backdrop-blur-sm p-5 transition-all hover:border-primary/20 hover:shadow-lg hover:bg-white">
+                  <div className="group flex gap-4 rounded-2xl border border-primary/8 bg-white backdrop-blur-sm p-5 transition-all hover:border-primary/20 hover:shadow-lg hover:bg-white">
                     <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary/8 transition-colors group-hover:bg-primary/12">
                       <Icon size={18} className="text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-foreground text-sm">{v.title}</h3>
-                      <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{v.desc}</p>
+                      <h3 className="font-bold text-black text-sm">{v.title}</h3>
+                      <p className="mt-1 text-xs leading-relaxed text-black">{v.desc}</p>
                     </div>
                   </div>
                 </FadeUp>

@@ -106,8 +106,8 @@ export default function Navbar() {
                   href={link.href}
                   className={`text-sm font-medium transition-all duration-300 relative group ${
                     active
-                      ? 'text-primary font-semibold'
-                      : 'text-muted-foreground hover:text-foreground'
+                      ? 'text-foreground font-extrabold'
+                      : 'text-foreground hover:text-foreground'
                   }`}
                 >
                   {link.label}

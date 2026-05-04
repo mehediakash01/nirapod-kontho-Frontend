@@ -176,17 +176,23 @@ export default function Footer() {
               </div>
 
               {/* Emergency numbers */}
-              <div className="mt-4 rounded-2xl border border-white/8 bg-white/5 p-4">
+              <div className="mt-4 rounded-2xl border border-secondary/25 bg-secondary/10 p-4">
                 <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-secondary mb-2.5">Emergency Lines</p>
-                <div className="flex gap-4">
+                <p className="mb-3 text-xs leading-[1.6] text-white/60">For immediate danger, call now. Then document here.</p>
+                <div className="flex flex-wrap gap-3">
                   <div>
-                    <a href="tel:999" className="text-xl font-black text-white hover:text-secondary transition-colors">999</a>
-                    <p className="text-[10px] text-white/35 mt-0.5">Police</p>
+                    <a href="tel:999" className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5 text-lg font-black text-white transition-colors hover:bg-secondary/90">
+                      <Phone size={14} />
+                      999
+                    </a>
+                    <p className="text-[10px] text-white/40 mt-1">Police</p>
                   </div>
-                  <div className="w-px bg-white/10" />
                   <div>
-                    <a href="tel:109" className="text-xl font-black text-white hover:text-secondary transition-colors">109</a>
-                    <p className="text-[10px] text-white/35 mt-0.5">Women & Child</p>
+                    <a href="tel:109" className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5 text-lg font-black text-white transition-colors hover:bg-secondary/90">
+                      <Phone size={14} />
+                      109
+                    </a>
+                    <p className="text-[10px] text-white/40 mt-1">Women & Child</p>
                   </div>
                 </div>
               </div>

@@ -80,7 +80,7 @@ export default function HowItWorksPage() {
     <main className="relative overflow-hidden">
       {/* Background */}
       <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-white via-primary/[0.025] to-secondary/[0.04]" />
+        <div className="absolute inset-0 " />
         <div className="absolute -left-48 top-0 h-[500px] w-[500px] rounded-full bg-primary/8 blur-[100px]" />
         <div className="absolute right-0 top-32 h-[400px] w-[400px] rounded-full bg-secondary/8 blur-[100px]" />
         <div className="absolute inset-0 opacity-[0.022]" style={{ backgroundImage: 'linear-gradient(var(--color-primary,#1a4f9c) 1px,transparent 1px),linear-gradient(90deg,var(--color-primary,#1a4f9c) 1px,transparent 1px)', backgroundSize: '72px 72px' }} />
@@ -136,7 +136,7 @@ export default function HowItWorksPage() {
               const Icon = phase.icon;
               return (
                 <FadeUp key={phase.step} delay={i * 0.1}>
-                  <article className={`group relative overflow-hidden rounded-3xl border ${phase.accent} bg-white/80 backdrop-blur-sm shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5`}>
+                  <article className={`group relative overflow-hidden rounded-3xl border ${phase.accent} backdrop-blur-sm shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5`}>
                     <div className="flex flex-col md:flex-row">
                       {/* Left accent strip */}
                       <div className={`md:w-1.5 h-1.5 md:h-auto rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none ${phase.accentBg} flex-shrink-0 transition-all`} />
@@ -193,10 +193,10 @@ export default function HowItWorksPage() {
           <div className="grid gap-4 md:grid-cols-3">
             {roles.map((r, i) => (
               <FadeUp key={r.title} delay={i * 0.09}>
-                <div className="group rounded-2xl border border-primary/8 bg-white/70 backdrop-blur-sm p-6 transition-all hover:border-primary/20 hover:shadow-lg hover:bg-white">
+                <div className="group rounded-2xl border border-primary/8 bg-white backdrop-blur-sm p-6 transition-all hover:border-primary/20 hover:shadow-lg hover:bg-white">
                   <div className="flex items-center gap-2.5 mb-3">
                     <div className={`h-2.5 w-2.5 rounded-full ${r.dot}`} />
-                    <h3 className="font-black text-foreground text-sm uppercase tracking-wider">{r.title}</h3>
+                    <h3 className="font-black text-black text-sm uppercase tracking-wider">{r.title}</h3>
                   </div>
                   <p className="text-xs leading-relaxed text-muted-foreground">{r.desc}</p>
                 </div>

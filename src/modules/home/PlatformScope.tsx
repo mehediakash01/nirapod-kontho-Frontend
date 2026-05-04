@@ -1,108 +1,87 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Lock, ClipboardCheck, Handshake } from 'lucide-react';
+import { ClipboardCheck, Handshake, Lock } from 'lucide-react';
 
 const pillars = [
   {
-    title: 'Confidential Intake',
-    description:
-      'Submit sensitive reports with identity protection controls and transparent status states.',
+    title: 'Anonymous Reporting',
+    description: 'Identity controls help people document harm without exposing themselves first.',
+    example: 'Recent pattern: most sensitive reports were submitted with identity hidden.',
     icon: Lock,
-    color: 'from-blue-500/20 to-blue-600/20',
-    iconBg: 'from-blue-500 to-blue-600',
   },
   {
-    title: 'Structured Verification',
-    description:
-      'Moderators review evidence and add notes before any escalation or assignment action.',
+    title: 'Verified Escalation',
+    description: 'Moderators review evidence before any case moves to operational partners.',
+    example: 'Example: duplicate entries are filtered before a partner receives a case.',
     icon: ClipboardCheck,
-    color: 'from-emerald-500/20 to-emerald-600/20',
-    iconBg: 'from-emerald-500 to-emerald-600',
   },
   {
-    title: 'Intervention Coordination',
-    description:
-      'NGO teams receive prioritized cases and maintain follow-up records with internal notes.',
+    title: 'Partner Response',
+    description: 'Trusted NGO teams receive structured cases with priority and follow-up context.',
+    example: 'Example: urgent shelter requests are separated from lower-risk documentation.',
     icon: Handshake,
-    color: 'from-amber-500/20 to-amber-600/20',
-    iconBg: 'from-amber-500 to-amber-600',
   },
 ];
 
 export default function PlatformScope() {
   return (
-    <section className="px-6 py-8 md:py-12 lg:py-16 mb-8">
+    <section className="relative overflow-hidden px-6 py-24 sm:py-28">
+      <div
+        className="absolute inset-0 -z-10 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            'linear-gradient(30deg, var(--color-primary) 12%, transparent 12.5%, transparent 87%, var(--color-primary) 87.5%, var(--color-primary)), linear-gradient(150deg, var(--color-primary) 12%, transparent 12.5%, transparent 87%, var(--color-primary) 87.5%, var(--color-primary))',
+          backgroundSize: '42px 72px',
+        }}
+      />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-muted/45 to-background" />
+
       <div className="mx-auto max-w-6xl">
-        {/* Left Column */}
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-start">
-          <motion.div
-            initial={{ opacity: 0, x: -32 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.55 }}
-          >
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.35 }}
+          transition={{ duration: 0.5 }}
+          className="grid gap-10 lg:grid-cols-[0.88fr_1.12fr] lg:items-end"
+        >
+          <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-secondary">Platform Blueprint</p>
-            <h2 className="mt-4 heading-section text-primary">
-              Built For Safety, Clarity, And Action
+            <h2 className="mt-4 max-w-xl font-serif text-4xl font-semibold leading-tight text-accent dark:text-foreground sm:text-5xl">
+              Built like a security layer, not a form.
             </h2>
-            <p className="mt-6 body-base">
-              Nirapod Kontho is not only a form submission tool. It is a full response workflow where each report can be
-              reviewed, assigned, and tracked until closure with clear accountability.
-            </p>
-
-            {/* Feature highlight */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="mt-8 rounded-xl border border-secondary/30 bg-secondary/5 p-6 mb-8"
-            >
-              <p className="text-xs font-semibold uppercase tracking-wide text-secondary/80">End-to-end accountability</p>
-              <p className="mt-2 body-small">From initial report through resolution with transparent case status and audit trails</p>
-            </motion.div>
-          </motion.div>
-
-          {/* Right Column - Pillars */}
-          <div className="space-y-4 gap-6">
-            {pillars.map((pillar, index) => {
-              const Icon = pillar.icon;
-              return (
-                <motion.div
-                  key={pillar.title}
-                  initial={{ opacity: 0, y: 24, scale: 0.98 }}
-                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                  whileHover={{ x: 6 }}
-                  className="group relative rounded-2xl border border-primary/10 bg-white p-6 shadow-sm transition-all duration-300 hover:border-primary/25 hover:shadow-md"
-                >
-                  {/* Gradient background on hover */}
-                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${pillar.color} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
-
-                  <div className="relative z-10">
-                    {/* Icon */}
-                    <motion.div
-                      whileHover={{ scale: 1.15, rotate: 5 }}
-                      className={`inline-flex rounded-lg bg-gradient-to-br ${pillar.iconBg} p-3 text-white`}
-                    >
-                      <Icon size={24} />
-                    </motion.div>
-
-                    {/* Title */}
-                    <h3 className="mt-4 heading-card text-primary">{pillar.title}</h3>
-
-                    {/* Description */}
-                    <p className="mt-2 body-small">{pillar.description}</p>
-
-                    {/* Accent line */}
-                    <div className={`mt-4 h-1 w-12 rounded-full bg-gradient-to-r ${pillar.iconBg} opacity-0 transition-opacity group-hover:opacity-100`} />
-                  </div>
-                </motion.div>
-              );
-            })}
           </div>
+          <p className="max-w-2xl text-base leading-[1.7] text-muted-foreground">
+            The workflow separates disclosure, verification, and intervention so a vulnerable person can move forward
+            without losing control of their identity or evidence.
+          </p>
+        </motion.div>
+
+        <div className="mt-14 grid gap-5 md:grid-cols-3">
+          {pillars.map((pillar, index) => {
+            const Icon = pillar.icon;
+            return (
+              <motion.article
+                key={pillar.title}
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{ delay: index * 0.08, duration: 0.5 }}
+                className="group min-h-[280px] overflow-hidden rounded-3xl border border-primary/10 bg-card p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-xl"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
+                  <Icon size={22} aria-hidden="true" />
+                </div>
+                <h3 className="mt-7 text-xl font-bold text-accent dark:text-foreground">{pillar.title}</h3>
+                <p className="mt-3 text-sm leading-[1.7] text-muted-foreground">{pillar.description}</p>
+
+                <div className="mt-7 translate-y-2 rounded-2xl border border-secondary/20 bg-secondary/10 p-4 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-secondary">Real example</p>
+                  <p className="mt-2 text-sm leading-[1.6] text-accent dark:text-foreground">{pillar.example}</p>
+                </div>
+              </motion.article>
+            );
+          })}
         </div>
       </div>
     </section>

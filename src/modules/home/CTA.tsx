@@ -11,9 +11,9 @@ export default function CTA() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.35 }}
         transition={{ duration: 0.5 }}
-        className="mx-auto max-w-4xl rounded-3xl border border-primary/15 bg-gradient-to-br from-primary to-secondary p-10 text-white shadow-2xl"
+        className="mx-auto max-w-4xl rounded-[2rem] border border-primary/15 bg-gradient-to-br from-accent via-primary to-primary p-10 text-white shadow-2xl"
       >
-        <h2 className="text-3xl font-bold sm:text-4xl">Support Victims Through Sustained Action</h2>
+        <h2 className="font-serif text-4xl font-semibold sm:text-5xl">Support Victims Through Sustained Action</h2>
 
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/85 sm:text-base">
           Every contribution strengthens legal aid, emergency response, and follow-up capacity for high-risk cases.
@@ -28,7 +28,7 @@ export default function CTA() {
           </Link>
           <Link
             href="/dashboard/user/create"
-            className="rounded-xl border border-white/40 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+            className="rounded-xl border border-white/40 bg-secondary px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-secondary/95"
           >
             Submit A Report
           </Link>
