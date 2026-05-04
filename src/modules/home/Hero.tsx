@@ -71,7 +71,7 @@ export default function Hero() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen overflow-hidden pt-24 sm:pt-32 lg:pt-36 pb-20 sm:pb-24 lg:pb-32 px-4 sm:px-6 lg:px-8"
+      className="relative min-h-screen overflow-hidden py-8 md:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 mb-8"
     >
       {/* Rich layered background */}
       <div className="pointer-events-none absolute inset-0 -z-10">

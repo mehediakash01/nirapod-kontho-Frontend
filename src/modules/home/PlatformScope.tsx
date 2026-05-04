@@ -32,7 +32,7 @@ const pillars = [
 
 export default function PlatformScope() {
   return (
-    <section className="px-6 py-24">
+    <section className="px-6 py-8 md:py-12 lg:py-16 mb-8">
       <div className="mx-auto max-w-6xl">
         {/* Left Column */}
         <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-start">
@@ -43,10 +43,10 @@ export default function PlatformScope() {
             transition={{ duration: 0.55 }}
           >
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-secondary">Platform Blueprint</p>
-            <h2 className="mt-4 text-balance text-3xl font-bold leading-tight text-primary sm:text-4xl">
+            <h2 className="mt-4 heading-section text-primary">
               Built For Safety, Clarity, And Action
             </h2>
-            <p className="mt-6 text-sm leading-relaxed text-gray-600 sm:text-base">
+            <p className="mt-6 body-base">
               Nirapod Kontho is not only a form submission tool. It is a full response workflow where each report can be
               reviewed, assigned, and tracked until closure with clear accountability.
             </p>
@@ -57,15 +57,15 @@ export default function PlatformScope() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="mt-8 rounded-xl border border-secondary/30 bg-secondary/5 p-4"
+              className="mt-8 rounded-xl border border-secondary/30 bg-secondary/5 p-6 mb-8"
             >
               <p className="text-xs font-semibold uppercase tracking-wide text-secondary/80">End-to-end accountability</p>
-              <p className="mt-2 text-sm text-gray-700">From initial report through resolution with transparent case status and audit trails</p>
+              <p className="mt-2 body-small">From initial report through resolution with transparent case status and audit trails</p>
             </motion.div>
           </motion.div>
 
           {/* Right Column - Pillars */}
-          <div className="space-y-4">
+          <div className="space-y-4 gap-6">
             {pillars.map((pillar, index) => {
               const Icon = pillar.icon;
               return (
@@ -91,10 +91,10 @@ export default function PlatformScope() {
                     </motion.div>
 
                     {/* Title */}
-                    <h3 className="mt-4 text-lg font-bold text-primary">{pillar.title}</h3>
+                    <h3 className="mt-4 heading-card text-primary">{pillar.title}</h3>
 
                     {/* Description */}
-                    <p className="mt-2 text-sm leading-relaxed text-gray-600">{pillar.description}</p>
+                    <p className="mt-2 body-small">{pillar.description}</p>
 
                     {/* Accent line */}
                     <div className={`mt-4 h-1 w-12 rounded-full bg-gradient-to-r ${pillar.iconBg} opacity-0 transition-opacity group-hover:opacity-100`} />
