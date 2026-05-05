@@ -44,10 +44,24 @@ function LoginFormContent() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
   });
+
+  const loadDemoCredentialsAndSubmit = (role: 'user' | 'moderator' | 'ngoadmin' | 'ngo') => {
+    const creds = {
+      user: { email: 'testuser@gmail.com', password: 'test@user' },
+      moderator: { email: 'testmoderator@gmail.com', password: 'test@moderator' },
+      ngoadmin: { email: 'testngoadmin@gmail.com', password: 'test@ngoadmin' },
+      ngo: { email: 'testngo@gmail.com', password: 'test@ngo' },
+    }[role];
+
+    setValue('email', creds.email);
+    setValue('password', creds.password);
+    handleSubmit(onSubmit)();
+  };
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
@@ -96,6 +110,48 @@ function LoginFormContent() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="space-y-2 mb-2">
+            <label className="text-[11px] font-bold text-muted-foreground uppercase flex justify-center tracking-wider">Demo Login</label>
+            <div className="flex flex-wrap gap-2 justify-center">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="text-[10px] h-7 px-2 border-primary/20 hover:bg-primary/10"
+                onClick={() => loadDemoCredentialsAndSubmit('user')}
+              >
+                User
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="text-[10px] h-7 px-2 border-primary/20 hover:bg-primary/10"
+                onClick={() => loadDemoCredentialsAndSubmit('moderator')}
+              >
+                Moderator
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="text-[10px] h-7 px-2 border-primary/20 hover:bg-primary/10"
+                onClick={() => loadDemoCredentialsAndSubmit('ngoadmin')}
+              >
+                NGO Admin
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="text-[10px] h-7 px-2 border-primary/20 hover:bg-primary/10"
+                onClick={() => loadDemoCredentialsAndSubmit('ngo')}
+              >
+                NGO
+              </Button>
+            </div>
+          </div>
+
           <OAuthButton
             provider="google"
             isLoading={oauthLoading}

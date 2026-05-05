@@ -1,7 +1,7 @@
 import LoginForm from "@/src/modules/auth/components/LoginForm";
 import Link from 'next/link';
 import Image from 'next/image';
-import { LockKeyhole, ShieldCheck, Lock, ArrowRight, CheckCircle2, Eye } from 'lucide-react';
+import { Home, LockKeyhole, ShieldCheck, Lock, ArrowRight, CheckCircle2, Eye } from 'lucide-react';
 
 const trustPoints = [
   {
@@ -60,6 +60,14 @@ export default function LoginPage() {
         <circle cx="500" cy="450" r="270" stroke="white" strokeWidth="1" />
         <circle cx="500" cy="450" r="170" stroke="white" strokeWidth="1" />
       </svg>
+
+      {/* ── Navigator Button ─────────────────────────────────── */}
+      <div className="absolute top-6 left-6 z-50">
+        <Link href="/" className="inline-flex items-center gap-2 rounded-full border border-primary/20 md:border-white/20 bg-primary/5 md:bg-black/10 backdrop-blur-md px-4 py-2 text-sm font-semibold text-primary md:text-white transition-all hover:bg-primary/10 md:hover:bg-black/20 hover:scale-105">
+          <Home className="h-4 w-4" />
+          <span className="hidden sm:inline">Back to Home</span>
+        </Link>
+      </div>
 
       {/* ── Content ──────────────────────────────────────────── */}
       <div className="relative mx-auto flex min-h-screen w-full max-w-7xl items-center px-4 py-12 md:px-8">
