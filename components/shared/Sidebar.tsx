@@ -13,6 +13,7 @@ import {
   ScrollText,
   Settings2,
   ShieldCheck,
+  User,
   UserCog,
   Users,
   ClipboardCheck,
@@ -39,11 +40,13 @@ const menu: Record<string, MenuItem[]> = {
     { name: 'My Reports', path: '/dashboard/user/reports', icon: ShieldCheck },
     { name: 'Notifications', path: '/dashboard/user/notifications', icon: Bell },
     { name: 'Donations', path: '/dashboard/user/donations', icon: CreditCard },
+    { name: 'Profile', path: '/dashboard/profile', icon: User },
   ],
   MODERATOR: [
     { name: 'Overview', path: '/dashboard/moderator', icon: LayoutGrid },
     { name: 'Pending Reports', path: '/dashboard/moderator/pending', icon: ClipboardCheck },
     { name: 'Reviewed Reports', path: '/dashboard/moderator/reviewed', icon: History },
+    { name: 'Profile', path: '/dashboard/profile', icon: User },
   ],
   NGO_ADMIN: [
     { name: 'Dashboard', path: '/dashboard/ngo', icon: LayoutGrid },
@@ -52,6 +55,7 @@ const menu: Record<string, MenuItem[]> = {
     { name: 'Notifications', path: '/dashboard/ngo/notifications', icon: Bell },
     { name: 'Resources', path: '/dashboard/ngo/resources', icon: BookOpenText },
     { name: 'Settings', path: '/dashboard/ngo/settings', icon: Settings2 },
+    { name: 'Profile', path: '/dashboard/profile', icon: User },
   ],
   SUPER_ADMIN: [
     { name: 'Dashboard', path: '/dashboard/super-admin', icon: LayoutGrid },
@@ -62,6 +66,7 @@ const menu: Record<string, MenuItem[]> = {
     { name: 'Analytics', path: '/dashboard/super-admin/analytics', icon: BarChart3 },
     { name: 'Payment & Donations', path: '/dashboard/super-admin/payments', icon: CreditCard },
     { name: 'Platform Settings', path: '/dashboard/super-admin/settings', icon: Settings2 },
+    { name: 'Profile', path: '/dashboard/profile', icon: User },
   ],
 };
 
