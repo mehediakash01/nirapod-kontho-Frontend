@@ -10,15 +10,18 @@ const quickLinks = [
   { label: 'How It Works', href: '/how-it-works' },
   { label: 'Submit Report', href: '/dashboard/user/create' },
   { label: 'Resources', href: '/resources' },
-  { label: 'FAQ', href: '/faq' },
+  { label: 'Donation', href: '/donation' },
 ];
 
 const legalLinks = [
-  { label: 'Privacy Policy', href: '/privacy' },
-  { label: 'Terms of Service', href: '/terms' },
   { label: 'Safety Guide', href: '/safety' },
   { label: 'Contact Us', href: '/contact' },
-  { label: 'Cookies', href: '/cookies' },
+];
+
+const socialLinks = [
+  { label: 'FB', href: 'https://facebook.com', aria: 'Facebook' },
+  { label: 'TW', href: 'https://twitter.com', aria: 'Twitter' },
+  { label: 'IN', href: 'https://linkedin.com', aria: 'LinkedIn' },
 ];
 
 const trustBadges = [
@@ -98,10 +101,10 @@ export default function Footer() {
 
             {/* Social links */}
             <div className="flex gap-2.5">
-              {['FB', 'TW', 'IN'].map((s) => (
-                <a key={s} href="#" aria-label={s}
+              {socialLinks.map((s) => (
+                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.aria}
                   className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-[11px] font-bold text-white/50 transition-all hover:bg-white/15 hover:border-white/25 hover:text-white">
-                  {s}
+                  {s.label}
                 </a>
               ))}
             </div>
