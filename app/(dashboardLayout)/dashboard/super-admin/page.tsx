@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
+import { CardGridSkeleton, ListSkeleton, MetricGridSkeleton } from '@/components/shared/LoadingSkeletons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -293,6 +294,8 @@ export default function SuperAdminDashboardPage() {
           </div>
         </section>
 
+        {analyticsQuery.isLoading ? <MetricGridSkeleton /> : null}
+
         {analyticsQuery.data ? (
           <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <MetricCard
@@ -407,7 +410,9 @@ export default function SuperAdminDashboardPage() {
                 <MiniStat label="Resolved Cases" value={analyticsQuery.data.resolvedCases} />
               </div>
             ) : (
-              <p className="mt-4 text-sm text-muted-foreground">Loading analytics...</p>
+              <div className="mt-4">
+                <ListSkeleton count={4} />
+              </div>
             )}
           </div>
         </section>
@@ -423,10 +428,10 @@ export default function SuperAdminDashboardPage() {
             <Badge variant="outline">{unassignedReports.length} unassigned</Badge>
           </div>
 
-          {reportsQuery.isLoading ? <p>Loading verified reports...</p> : null}
+          {reportsQuery.isLoading ? <CardGridSkeleton /> : null}
           {reportsQuery.error ? <p className="text-sm text-red-600">Failed to load reports.</p> : null}
           {recommendationsQuery.isLoading ? (
-            <p className="text-sm text-muted-foreground">Calculating NGO recommendations...</p>
+            <ListSkeleton count={2} />
           ) : null}
 
           {!reportsQuery.isLoading && !reportsQuery.error && !unassignedReports.length ? (

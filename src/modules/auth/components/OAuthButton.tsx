@@ -36,10 +36,11 @@ function GoogleLogo() {
 interface OAuthButtonProps {
   provider: 'google';
   isLoading?: boolean;
+  disabled?: boolean;
   onClick?: () => void;
 }
 
-export default function OAuthButton({ provider, isLoading = false, onClick }: OAuthButtonProps) {
+export default function OAuthButton({ provider, isLoading = false, disabled = false, onClick }: OAuthButtonProps) {
   const isGoogle = provider === 'google';
 
   return (
@@ -47,7 +48,7 @@ export default function OAuthButton({ provider, isLoading = false, onClick }: OA
       type="button"
       variant="outline"
       className="h-11 w-full border-primary/20 bg-white/70 text-foreground hover:bg-white/80 flex items-center justify-center"
-      disabled={isLoading}
+      disabled={isLoading || disabled}
       onClick={onClick}
     >
       {isLoading ? (

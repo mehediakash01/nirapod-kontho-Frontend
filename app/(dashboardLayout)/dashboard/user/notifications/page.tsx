@@ -3,6 +3,7 @@
 import { useNotifications } from '@/src/modules/notification/hooks/useNotifications';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { ListSkeleton } from '@/components/shared/LoadingSkeletons';
 
 export default function UserNotificationsPage() {
   const { data, isLoading, markAsRead, isMarkingAsRead } = useNotifications();
@@ -17,7 +18,12 @@ export default function UserNotificationsPage() {
   };
 
   if (isLoading) {
-    return <p>Loading notifications...</p>;
+    return (
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold text-primary">My Notifications</h1>
+        <ListSkeleton />
+      </div>
+    );
   }
 
   return (

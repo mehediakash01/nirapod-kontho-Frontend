@@ -4,6 +4,7 @@
 import { useAuth } from '@/src/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { DashboardRedirectSkeleton } from '@/components/shared/LoadingSkeletons';
 
 export default function DashboardRedirect() {
   const { data, isLoading, refetch } = useAuth();
@@ -57,5 +58,5 @@ export default function DashboardRedirect() {
       router.replace('/dashboard/super-admin');
   }, [data, isLoading, isRefetching, oauthSuccess, oauthRetryCount, router]);
 
-  return <p>Loading your dashboard...</p>;
+  return <DashboardRedirectSkeleton />;
 }

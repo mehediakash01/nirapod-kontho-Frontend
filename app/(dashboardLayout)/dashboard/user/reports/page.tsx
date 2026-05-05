@@ -3,12 +3,20 @@
 import Link from 'next/link';
 import ReportCard from '@/src/modules/report/components/ReportCard';
 import { useReports } from '@/src/modules/report/hooks/useReports';
+import { CardGridSkeleton } from '@/components/shared/LoadingSkeletons';
 
 export default function UserReportsPage() {
   const { data, isLoading } = useReports();
 
   if (isLoading) {
-    return <p>Loading reports...</p>;
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between">
+          <h1 className="text-2xl font-bold text-primary">My Reports</h1>
+        </div>
+        <CardGridSkeleton />
+      </div>
+    );
   }
 
   return (

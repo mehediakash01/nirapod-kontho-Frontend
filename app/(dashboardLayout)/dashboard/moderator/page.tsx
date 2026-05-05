@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import DashboardAnalytics from '@/components/shared/DashboardAnalytics';
 import { Badge } from '@/components/ui/badge';
+import { ListSkeleton, PageSkeleton } from '@/components/shared/LoadingSkeletons';
 import {
   getRecentDecisions,
   getVerificationOverview,
@@ -32,7 +33,7 @@ export default function ModeratorDashboardPage() {
   });
 
   if (isOverviewLoading) {
-    return <p>Loading moderator overview...</p>;
+    return <PageSkeleton />;
   }
 
   if (overviewError || !overview) {
@@ -112,7 +113,7 @@ export default function ModeratorDashboardPage() {
             </CardHeader>
             <CardContent className="space-y-2">
               {isRecentLoading ? (
-                <p className="text-sm text-muted-foreground">Loading decisions...</p>
+                <ListSkeleton count={4} />
               ) : recent?.length ? (
                 recent.slice(0, 6).map((item) => (
                   <div key={item.id} className="flex items-start justify-between gap-3 rounded-lg border p-3">

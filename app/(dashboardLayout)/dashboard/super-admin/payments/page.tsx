@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
+import { ListSkeleton, MetricGridSkeleton } from '@/components/shared/LoadingSkeletons';
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -154,7 +155,12 @@ export default function SuperAdminPaymentsPage() {
           </section>
         ) : null}
 
-        {paymentQuery.isLoading ? <p className="text-sm text-muted-foreground">Loading payment analytics...</p> : null}
+        {paymentQuery.isLoading ? (
+          <>
+            <MetricGridSkeleton />
+            <ListSkeleton />
+          </>
+        ) : null}
         {paymentQuery.error ? (
           <p className="text-sm text-red-600">Failed to load payment dashboard data.</p>
         ) : null}

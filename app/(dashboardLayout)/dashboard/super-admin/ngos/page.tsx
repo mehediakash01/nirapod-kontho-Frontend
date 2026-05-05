@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { CardGridSkeleton } from '@/components/shared/LoadingSkeletons';
 import { Building2, Mail, MapPin, Phone, Search } from 'lucide-react';
 import { getAllNgos } from '@/src/modules/super-admin/services/super-admin.api';
 
@@ -58,7 +59,7 @@ export default function SuperAdminNgosPage() {
             />
           </div>
 
-          {ngosQuery.isLoading ? <p className="text-sm text-muted-foreground">Loading NGOs...</p> : null}
+          {ngosQuery.isLoading ? <CardGridSkeleton /> : null}
           {ngosQuery.error ? <p className="text-sm text-red-600">Failed to load NGOs.</p> : null}
 
           {!ngosQuery.isLoading && !ngosQuery.error && !filteredNgos.length ? (

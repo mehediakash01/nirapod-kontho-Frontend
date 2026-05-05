@@ -5,7 +5,7 @@ import { useState, Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { CircleAlert, Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react';
+import { CircleAlert, Eye, EyeOff, Loader2, Lock, LogIn, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 import { loginSchema } from '../validation';
 
@@ -23,8 +23,10 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { LoginFormSkeleton } from '@/components/shared/LoadingSkeletons';
 
 type LoginFormValues = z.infer<typeof loginSchema>;
+type DemoRole = 'user' | 'moderator' | 'ngoadmin' | 'ngo';
 
 type ApiErrorShape = {
   response?: {
@@ -40,6 +42,8 @@ function LoginFormContent() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [oauthLoading, setOauthLoading] = useState(false);
+  const [demoSubmittingRole, setDemoSubmittingRole] = useState<DemoRole | null>(null);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const {
     register,
@@ -50,7 +54,11 @@ function LoginFormContent() {
     resolver: zodResolver(loginSchema),
   });
 
-  const loadDemoCredentialsAndSubmit = (role: 'user' | 'moderator' | 'ngoadmin' | 'ngo') => {
+  const isAuthBusy = isSubmitting || oauthLoading || demoSubmittingRole !== null || isRedirecting;
+
+  const loadDemoCredentialsAndSubmit = async (role: DemoRole) => {
+    if (isAuthBusy) return;
+
     const creds = {
       user: { email: 'testuser@gmail.com', password: 'test@user' },
       moderator: { email: 'testmoderator@gmail.com', password: 'test@moderator' },
@@ -60,7 +68,11 @@ function LoginFormContent() {
 
     setValue('email', creds.email);
     setValue('password', creds.password);
-    handleSubmit(onSubmit)();
+    setDemoSubmittingRole(role);
+    const signedIn = await onSubmit(creds);
+    if (!signedIn) {
+      setDemoSubmittingRole(null);
+    }
   };
 
   const onSubmit = async (data: LoginFormValues) => {
@@ -71,8 +83,11 @@ function LoginFormContent() {
         throw new Error('Unable to verify session after sign in');
       }
       toast.success('Signed in successfully');
+      setIsRedirecting(true);
       router.push('/dashboard');
+      return true;
     } catch (err: unknown) {
+      setIsRedirecting(false);
       const message =
         typeof err === 'object' &&
         err !== null &&
@@ -83,6 +98,7 @@ function LoginFormContent() {
             ? err.message
           : 'Sign in failed';
       toast.error(message);
+      return false;
     }
   };
 
@@ -113,48 +129,35 @@ function LoginFormContent() {
           <div className="space-y-2 mb-2">
             <label className="text-[11px] font-bold text-muted-foreground uppercase flex justify-center tracking-wider">Demo Login</label>
             <div className="flex flex-wrap gap-2 justify-center">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="text-[10px] h-7 px-2 border-primary/20 hover:bg-primary/10"
-                onClick={() => loadDemoCredentialsAndSubmit('user')}
-              >
-                User
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="text-[10px] h-7 px-2 border-primary/20 hover:bg-primary/10"
-                onClick={() => loadDemoCredentialsAndSubmit('moderator')}
-              >
-                Moderator
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="text-[10px] h-7 px-2 border-primary/20 hover:bg-primary/10"
-                onClick={() => loadDemoCredentialsAndSubmit('ngoadmin')}
-              >
-                NGO Admin
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="text-[10px] h-7 px-2 border-primary/20 hover:bg-primary/10"
-                onClick={() => loadDemoCredentialsAndSubmit('ngo')}
-              >
-                NGO
-              </Button>
+              {[
+                ['user', 'User'],
+                ['moderator', 'Moderator'],
+                ['ngoadmin', 'NGO Admin'],
+                ['ngo', 'NGO'],
+              ].map(([role, label]) => (
+                <Button
+                  key={role}
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-7 min-w-16 px-2 text-[10px] border-primary/20 hover:bg-primary/10"
+                  disabled={isAuthBusy}
+                  onClick={() => loadDemoCredentialsAndSubmit(role as DemoRole)}
+                >
+                  {demoSubmittingRole === role ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
+                  {label}
+                </Button>
+              ))}
             </div>
+            {demoSubmittingRole ? (
+              <p className="text-center text-xs text-muted-foreground">Signing in with the selected demo account...</p>
+            ) : null}
           </div>
 
           <OAuthButton
             provider="google"
             isLoading={oauthLoading}
+            disabled={isSubmitting || demoSubmittingRole !== null}
             onClick={handleGoogleLogin}
           />
 
@@ -177,6 +180,7 @@ function LoginFormContent() {
                 placeholder="you@example.com"
                 className="h-11 border-primary/20 bg-white/70 pl-9 focus-visible:border-secondary"
                 aria-invalid={Boolean(errors.email)}
+                disabled={isAuthBusy}
               />
             </div>
             {errors.email?.message ? (
@@ -197,6 +201,7 @@ function LoginFormContent() {
                 placeholder="Enter your password"
                 className="h-11 border-primary/20 bg-white/70 pl-9 pr-10 focus-visible:border-secondary"
                 aria-invalid={Boolean(errors.password)}
+                disabled={isAuthBusy}
               />
               <Button
                 type="button"
@@ -204,6 +209,7 @@ function LoginFormContent() {
                 size="icon-sm"
                 className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground"
                 onClick={() => setShowPassword((prev) => !prev)}
+                disabled={isAuthBusy}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -223,6 +229,7 @@ function LoginFormContent() {
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
+                disabled={isAuthBusy}
                 className="h-4 w-4 rounded border-primary/30 accent-secondary"
               />
               Keep me signed in
@@ -235,9 +242,16 @@ function LoginFormContent() {
           <Button
             type="submit"
             className="h-11 w-full bg-linear-to-r from-primary via-tertiary to-secondary text-white"
-            disabled={isSubmitting}
+            disabled={isAuthBusy}
           >
-            {isSubmitting ? 'Signing in...' : 'Sign in'}
+            {isAuthBusy ? (
+              <span className="inline-flex items-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Signing in...
+              </span>
+            ) : (
+              'Sign in'
+            )}
           </Button>
 
           <p className="text-center text-sm text-muted-foreground">
@@ -254,7 +268,7 @@ function LoginFormContent() {
 
 export default function LoginForm() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<LoginFormSkeleton />}>
       <LoginFormContent />
     </Suspense>
   );

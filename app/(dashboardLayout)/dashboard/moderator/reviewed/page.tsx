@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ListSkeleton } from '@/components/shared/LoadingSkeletons';
 import { getRecentDecisions } from '@/src/modules/verification/services/verification.api';
 
 export default function ModeratorReviewedReportsPage() {
@@ -13,7 +14,15 @@ export default function ModeratorReviewedReportsPage() {
   });
 
   if (isLoading) {
-    return <p>Loading reviewed reports...</p>;
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-primary">Reviewed Reports</h1>
+          <p className="text-sm text-gray-600">Your recent moderation decisions and recorded feedback.</p>
+        </div>
+        <ListSkeleton />
+      </div>
+    );
   }
 
   if (error) {

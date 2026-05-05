@@ -3,6 +3,7 @@
 import { Bell } from 'lucide-react';
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
 import { Button } from '@/components/ui/button';
+import { ListSkeleton } from '@/components/shared/LoadingSkeletons';
 import { useNotifications } from '@/src/modules/notification/hooks/useNotifications';
 
 export default function NgoNotificationsPage() {
@@ -16,7 +17,7 @@ export default function NgoNotificationsPage() {
           <p className="mt-1 text-sm text-muted-foreground">Track assignment updates, case events, and system notices.</p>
         </section>
 
-        {isLoading ? <p className="text-sm text-muted-foreground">Loading notifications...</p> : null}
+        {isLoading ? <ListSkeleton /> : null}
         {error ? <p className="text-sm text-red-600">Failed to load notifications.</p> : null}
 
         {!isLoading && !error && !data?.length ? (

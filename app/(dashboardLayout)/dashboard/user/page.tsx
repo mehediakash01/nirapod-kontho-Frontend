@@ -5,8 +5,9 @@ import { useReports } from '@/src/modules/report/hooks/useReports';
 import Link from 'next/link';
 import { useNotifications } from '@/src/modules/notification/hooks/useNotifications';
 import { useAuth } from '@/src/hooks/useAuth';
-import { Shield, Mail, Clock } from 'lucide-react';
+import { Shield, Mail } from 'lucide-react';
 import DashboardAnalytics from '@/components/shared/DashboardAnalytics';
+import { PageSkeleton } from '@/components/shared/LoadingSkeletons';
 
 
 export default function UserDashboard() {
@@ -14,7 +15,7 @@ export default function UserDashboard() {
   const { data, isLoading } = useReports();
   const { data: notifications } = useNotifications();
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <PageSkeleton />;
 
   const unreadCount = notifications?.filter((item) => !item.isRead).length ?? 0;
   const recentReports = data?.slice(0, 4) ?? [];

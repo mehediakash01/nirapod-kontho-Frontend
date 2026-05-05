@@ -3,29 +3,30 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/src/services/api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { AnalyticsSkeleton } from '@/components/shared/LoadingSkeletons';
 import { 
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, 
-  PieChart, Pie, Cell, LineChart, Line 
+  PieChart, Pie, Cell
 } from 'recharts';
-import { Loader2 } from 'lucide-react';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
+type ChartDatum = { name: string; value: number };
+type DashboardAnalyticsData = {
+  overview: Record<string, React.ReactNode>;
+  charts: Record<string, ChartDatum[]>;
+};
 
 export default function DashboardAnalytics() {
   const { data, isLoading, error } = useQuery({
     queryKey: ['dashboard-analytics'],
     queryFn: async () => {
       const res = await api.get('/analytics/dashboard');
-      return res.data?.data;
+      return res.data?.data as DashboardAnalyticsData | undefined;
     }
   });
 
   if (isLoading) {
-    return (
-      <div className="flex h-48 w-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <AnalyticsSkeleton />;
   }
 
   if (error || !data) {
@@ -54,7 +55,7 @@ export default function DashboardAnalytics() {
 
       {/* Charts */}
       <div className="grid gap-4 md:grid-cols-2">
-        {Object.entries(charts).map(([chartName, chartData]: [string, any], index) => {
+        {Object.entries(charts).map(([chartName, chartData], index) => {
           if (!chartData || chartData.length === 0) return null;
           
           return (
@@ -82,7 +83,7 @@ export default function DashboardAnalytics() {
                         paddingAngle={5}
                         dataKey="value"
                       >
-                        {chartData.map((_: any, i: number) => (
+                        {chartData.map((_, i) => (
                           <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
                         ))}
                       </Pie>

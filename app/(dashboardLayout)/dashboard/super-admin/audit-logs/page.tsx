@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
 import { Badge } from '@/components/ui/badge';
+import { ListSkeleton } from '@/components/shared/LoadingSkeletons';
 import { getDonationDashboard } from '@/src/modules/payment/services/payment.api';
 import { getAssignmentAuditLogs } from '@/src/modules/super-admin/services/super-admin.api';
 
@@ -62,7 +63,7 @@ export default function SuperAdminAuditLogsPage() {
         </section>
 
         {(assignmentAuditQuery.isLoading || donationQuery.isLoading) ? (
-          <p className="text-sm text-muted-foreground">Loading audit events...</p>
+          <ListSkeleton />
         ) : null}
 
         {!assignmentAuditQuery.isLoading && !donationQuery.isLoading && !events.length ? (

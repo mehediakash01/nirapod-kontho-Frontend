@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
+import { CardGridSkeleton } from '@/components/shared/LoadingSkeletons';
 import PendingReportCard from '@/src/modules/verification/components/PendingReportCard';
 import {
   getPendingReports,
@@ -68,7 +69,15 @@ export default function ModeratorPendingReportsPage() {
   };
 
   if (isLoading) {
-    return <p>Loading pending reports...</p>;
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-primary">Pending Verification Queue</h1>
+          <p className="text-sm text-gray-600">Review evidence, complete checklist, and approve or reject submissions.</p>
+        </div>
+        <CardGridSkeleton />
+      </div>
+    );
   }
 
   if (error) {

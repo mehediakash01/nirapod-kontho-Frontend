@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -18,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { LoginFormSkeleton } from '@/components/shared/LoadingSkeletons';
 import { useAuth } from '@/src/hooks/useAuth';
 import {
   createMonthlySubscription,
@@ -93,11 +93,8 @@ export default function DonationPage() {
 
   if (isLoading) {
     return (
-      <main className="relative flex min-h-[60vh] items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Heart className="h-8 w-8 animate-pulse text-secondary" />
-          <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest">Loading...</p>
-        </div>
+      <main className="relative flex min-h-[60vh] items-center justify-center px-6">
+        <LoginFormSkeleton />
       </main>
     );
   }

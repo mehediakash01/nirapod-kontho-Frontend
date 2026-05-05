@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
+import { TableSkeleton } from '@/components/shared/LoadingSkeletons';
 import { getMyDonations } from '@/src/modules/payment/services/payment.api';
 
 export default function UserDonationsPage() {
@@ -44,7 +45,7 @@ export default function UserDonationsPage() {
           <Metric title="Amount (Success)" value={`$${summary.totalAmount.toFixed(2)}`} />
         </div>
 
-        {isLoading ? <p>Loading donation history...</p> : null}
+        {isLoading ? <TableSkeleton /> : null}
         {!isLoading && error ? <p className="text-red-600">Failed to load donation history.</p> : null}
 
         {!isLoading && !error && !data?.length ? (

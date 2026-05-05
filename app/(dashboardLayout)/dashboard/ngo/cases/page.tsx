@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
+import { CardGridSkeleton } from '@/components/shared/LoadingSkeletons';
 import CaseCard from '@/src/modules/ngo/components/CaseCard';
 import { getMyCases, updateCase, type CaseStatus } from '@/src/modules/ngo/services/ngo.api';
 
@@ -45,7 +46,7 @@ export default function NgoMyCasesPage() {
           <p className="mt-1 text-sm text-muted-foreground">Detailed view of all assigned cases for active handling.</p>
         </section>
 
-        {casesQuery.isLoading ? <p className="text-sm text-muted-foreground">Loading cases...</p> : null}
+        {casesQuery.isLoading ? <CardGridSkeleton /> : null}
         {casesQuery.error ? <p className="text-sm text-red-600">Failed to load cases.</p> : null}
 
         {!casesQuery.isLoading && !casesQuery.error && !casesQuery.data?.length ? (

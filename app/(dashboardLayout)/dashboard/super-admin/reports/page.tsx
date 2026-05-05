@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
 import { Badge } from '@/components/ui/badge';
+import { CardGridSkeleton } from '@/components/shared/LoadingSkeletons';
 import { ClipboardCheck, Flag, Handshake } from 'lucide-react';
 import { getAllNgos, getVerifiedReports } from '@/src/modules/super-admin/services/super-admin.api';
 
@@ -55,7 +56,7 @@ export default function SuperAdminReportsPage() {
           <SummaryCard label="High Priority" value={summary.highPriority} icon={<Flag className="size-4" />} />
         </section>
 
-        {reportsQuery.isLoading ? <p className="text-sm text-muted-foreground">Loading verified reports...</p> : null}
+        {reportsQuery.isLoading ? <CardGridSkeleton /> : null}
         {reportsQuery.error ? <p className="text-sm text-red-600">Failed to load reports.</p> : null}
 
         {!reportsQuery.isLoading && !reportsQuery.error && !reports.length ? (

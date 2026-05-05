@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
 import DashboardAnalytics from '@/components/shared/DashboardAnalytics';
 import { Badge } from '@/components/ui/badge';
+import { CardGridSkeleton, TableSkeleton } from '@/components/shared/LoadingSkeletons';
 import CaseCard from '@/src/modules/ngo/components/CaseCard';
 import { getMyCases, updateCase, type CaseStatus } from '@/src/modules/ngo/services/ngo.api';
 import { Activity, AlertTriangle, CheckCircle2, Clock3, FolderKanban } from 'lucide-react';
@@ -22,7 +23,7 @@ export default function NgoDashboardPage() {
     queryFn: getMyCases,
   });
 
-  const cases = data ?? [];
+  const cases = useMemo(() => data ?? [], [data]);
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: ({ id, status, note }: { id: string; status: CaseStatus; note?: string }) =>
@@ -128,7 +129,9 @@ export default function NgoDashboardPage() {
               <Badge variant="outline">Last {recentCases.length}</Badge>
             </div>
 
-            {!isLoading && !error && recentCases.length ? (
+            {isLoading ? (
+              <TableSkeleton rows={4} columns={4} />
+            ) : !error && recentCases.length ? (
               <div className="overflow-hidden rounded-xl border">
                 <div className="grid grid-cols-[1.2fr_0.7fr_0.6fr_0.8fr] bg-muted/40 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   <span>Case</span>
@@ -182,7 +185,7 @@ export default function NgoDashboardPage() {
             ))}
           </div>
 
-        {isLoading ? <p>Loading assigned cases...</p> : null}
+          {isLoading ? <CardGridSkeleton /> : null}
 
           {!isLoading && error ? <p className="text-red-600">Failed to load assigned cases.</p> : null}
 

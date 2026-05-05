@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useAuth } from '@/src/hooks/useAuth';
 import { usePathname, useRouter } from 'next/navigation';
 import type { Role } from '@/src/types/user';
+import { PageSkeleton } from '@/components/shared/LoadingSkeletons';
 
 export default function ProtectedRoute({
   children,
@@ -36,7 +37,7 @@ export default function ProtectedRoute({
     }
   }, [data, isLoading, allowedRoles, isOAuthHandoff, router]);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <PageSkeleton />;
 
   if (!data && isOAuthHandoff) {
     return <>{children}</>;
