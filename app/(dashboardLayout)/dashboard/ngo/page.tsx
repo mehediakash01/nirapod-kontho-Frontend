@@ -3,13 +3,28 @@
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import Link from 'next/link';
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
 import DashboardAnalytics from '@/components/shared/DashboardAnalytics';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { CardGridSkeleton, TableSkeleton } from '@/components/shared/LoadingSkeletons';
 import CaseCard from '@/src/modules/ngo/components/CaseCard';
-import { getMyCases, updateCase, type CaseStatus } from '@/src/modules/ngo/services/ngo.api';
-import { Activity, AlertTriangle, CheckCircle2, Clock3, FolderKanban } from 'lucide-react';
+import { getMyCases, updateCase, type CaseStatus, type NgoCase } from '@/src/modules/ngo/services/ngo.api';
+import {
+  Activity,
+  AlertTriangle,
+  ArrowRight,
+  CheckCircle2,
+  Clock3,
+  FileText,
+  FolderKanban,
+  ListChecks,
+  MapPin,
+  MessageSquareText,
+  ShieldCheck,
+  Siren,
+} from 'lucide-react';
 
 const filterTabs = ['ALL', 'URGENT', 'UNDER_REVIEW', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'] as const;
 type FilterTab = (typeof filterTabs)[number];
@@ -51,17 +66,41 @@ export default function NgoDashboardPage() {
 
   const metrics = useMemo(() => {
     const total = cases.length;
+    const underReview = cases.filter((item) => item.status === 'UNDER_REVIEW').length;
     const inProgress = cases.filter((item) => item.status === 'IN_PROGRESS').length;
     const resolved = cases.filter((item) => item.status === 'RESOLVED' || item.status === 'CLOSED').length;
     const urgent = cases.filter((item) => item.report.severity === 'URGENT' || item.priority === 'HIGH').length;
+    const active = cases.filter((item) => item.status === 'UNDER_REVIEW' || item.status === 'IN_PROGRESS').length;
+    const notes = cases.reduce((sum, item) => sum + item.notes.length, 0);
+    const evidence = cases.reduce((sum, item) => sum + item.report.evidence.length + (item.report.voiceNoteUrl ? 1 : 0), 0);
+    const newToday = cases.filter((item) => isSameDay(new Date(item.createdAt), new Date())).length;
 
     return {
       total,
+      underReview,
       inProgress,
       resolved,
       urgent,
+      active,
+      notes,
+      evidence,
+      newToday,
     };
   }, [cases]);
+
+  const statusBreakdown = useMemo(
+    () =>
+      [
+        { label: 'Under Review', value: metrics.underReview, tone: 'warning' as const },
+        { label: 'In Progress', value: metrics.inProgress, tone: 'info' as const },
+        {
+          label: 'Resolved / Closed',
+          value: metrics.resolved,
+          tone: 'success' as const,
+        },
+      ],
+    [metrics.inProgress, metrics.resolved, metrics.underReview]
+  );
 
   const trendPoints = useMemo(() => {
     const days = 7;
@@ -103,29 +142,167 @@ export default function NgoDashboardPage() {
     [cases]
   );
 
+  const priorityCases = useMemo(
+    () =>
+      [...cases]
+        .filter((item) => item.priority === 'HIGH' || item.report.severity === 'URGENT')
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, 4),
+    [cases]
+  );
+
+  const latestNote = useMemo(() => {
+    return cases
+      .flatMap((item) =>
+        item.notes.map((note) => ({
+          ...note,
+          caseType: item.report.type,
+          caseId: item.id,
+        }))
+      )
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
+  }, [cases]);
+
   return (
     <ProtectedRoute allowedRoles={['NGO_ADMIN']}>
-      <div className="space-y-6">
+      <div className="space-y-8">
         <DashboardAnalytics />
 
-        <section className="rounded-2xl border border-border/70 bg-card/70 p-5 shadow-sm backdrop-blur-sm sm:p-6">
-          <h1 className="text-2xl font-bold text-primary sm:text-3xl">NGO Case Command</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Manage assigned cases, prioritize urgent incidents, and keep case movement transparent.
-          </p>
+        <section className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm">
+          <div className="grid gap-6 p-5 sm:p-6 xl:grid-cols-[1.35fr_0.65fr]">
+            <div>
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <ShieldCheck className="size-3.5" />
+                NGO Operations
+              </div>
+              <h1 className="text-2xl font-bold text-primary sm:text-3xl">Case Response Dashboard</h1>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+                Coordinate assigned verified incidents, triage urgent requests, document response activity, and keep
+                every case moving toward resolution.
+              </p>
+
+              <div className="mt-5 flex flex-wrap gap-2">
+                <Button asChild className="gap-2">
+                  <Link href="/dashboard/ngo/cases">
+                    Open All Cases <ArrowRight className="size-4" />
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="gap-2">
+                  <Link href="/dashboard/ngo/notifications">
+                    View Notifications <MessageSquareText className="size-4" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+
+            <div className="rounded-xl border bg-background/80 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Today&apos;s Focus</p>
+              <div className="mt-4 space-y-3">
+                <BriefingRow label="New assignments" value={metrics.newToday} />
+                <BriefingRow label="Active cases" value={metrics.active} />
+                <BriefingRow label="High priority" value={metrics.urgent} alert={metrics.urgent > 0} />
+              </div>
+            </div>
+          </div>
         </section>
 
         <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <MetricCard title="Total Cases" value={metrics.total} icon={<FolderKanban className="size-4" />} />
-          <MetricCard title="In Progress" value={metrics.inProgress} icon={<Clock3 className="size-4" />} />
-          <MetricCard title="Resolved" value={metrics.resolved} icon={<CheckCircle2 className="size-4" />} />
-          <MetricCard title="Urgent" value={metrics.urgent} icon={<AlertTriangle className="size-4" />} tone="alert" />
+          <MetricCard
+            title="Total Assigned"
+            value={metrics.total}
+            description="All cases assigned to your organization"
+            icon={<FolderKanban className="size-4" />}
+          />
+          <MetricCard
+            title="In Progress"
+            value={metrics.inProgress}
+            description="Cases currently receiving active response"
+            icon={<Clock3 className="size-4" />}
+            tone="info"
+          />
+          <MetricCard
+            title="Resolved"
+            value={metrics.resolved}
+            description="Cases resolved or formally closed"
+            icon={<CheckCircle2 className="size-4" />}
+            tone="success"
+          />
+          <MetricCard
+            title="Urgent"
+            value={metrics.urgent}
+            description="High priority or urgent severity cases"
+            icon={<AlertTriangle className="size-4" />}
+            tone="alert"
+          />
         </section>
 
-        <section className="grid gap-6 xl:grid-cols-[1.25fr_1fr]">
+        <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+          <div className="rounded-2xl border border-border/70 bg-card/70 p-5 shadow-sm">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-semibold text-primary">Workload Health</h2>
+                <p className="mt-1 text-sm text-muted-foreground">Current distribution across the response workflow.</p>
+              </div>
+              <Badge variant="outline">{metrics.active} active</Badge>
+            </div>
+
+            <div className="space-y-4">
+              {statusBreakdown.map((item) => (
+                <ProgressRow
+                  key={item.label}
+                  label={item.label}
+                  value={item.value}
+                  total={Math.max(metrics.total, 1)}
+                  tone={item.tone}
+                />
+              ))}
+            </div>
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <InsightCard
+                icon={<FileText className="size-4" />}
+                label="Evidence Files"
+                value={metrics.evidence}
+                detail="Attached media and voice notes available for review"
+              />
+              <InsightCard
+                icon={<MessageSquareText className="size-4" />}
+                label="Case Notes"
+                value={metrics.notes}
+                detail="Operational notes recorded by case handlers"
+              />
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-border/70 bg-card/70 p-5 shadow-sm">
+            <div className="mb-4 flex items-center gap-2">
+              <Siren className="size-4 text-rose-600" />
+              <h2 className="text-lg font-semibold text-primary">Priority Queue</h2>
+            </div>
+
+            {isLoading ? (
+              <TableSkeleton rows={4} columns={2} />
+            ) : priorityCases.length ? (
+              <div className="space-y-3">
+                {priorityCases.map((item) => (
+                  <PriorityCaseRow key={item.id} item={item} />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-xl border border-dashed p-4 text-sm text-muted-foreground">
+                No urgent or high priority cases are waiting right now.
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
           <div className="rounded-2xl border border-border/70 bg-card/70 p-4 shadow-sm">
             <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-primary">Recent Cases</h2>
+              <div>
+                <h2 className="text-lg font-semibold text-primary">Recent Assignments</h2>
+                <p className="mt-1 text-sm text-muted-foreground">Latest cases assigned to your NGO team.</p>
+              </div>
               <Badge variant="outline">Last {recentCases.length}</Badge>
             </div>
 
@@ -159,30 +336,59 @@ export default function NgoDashboardPage() {
           </div>
 
           <div className="rounded-2xl border border-border/70 bg-card/70 p-4 shadow-sm">
-            <div className="mb-3 flex items-center gap-2">
+            <div className="mb-4 flex items-center gap-2">
               <Activity className="size-4 text-primary" />
-              <h2 className="text-lg font-semibold text-primary">7-Day Case Trend</h2>
+              <div>
+                <h2 className="text-lg font-semibold text-primary">Response Activity</h2>
+                <p className="mt-1 text-sm text-muted-foreground">New assignments over the last seven days.</p>
+              </div>
             </div>
             <SimpleTrendChart points={trendPoints} />
+
+            <div className="mt-5 rounded-xl border bg-background/80 p-3">
+              <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-primary">
+                <ListChecks className="size-4" />
+                Latest Team Note
+              </p>
+              {latestNote ? (
+                <div>
+                  <p className="line-clamp-2 text-sm text-muted-foreground">{latestNote.note}</p>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    {latestNote.caseType.replace('_', ' ')} | {new Date(latestNote.createdAt).toLocaleString()}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">No case notes have been recorded yet.</p>
+              )}
+            </div>
           </div>
         </section>
 
         <section className="rounded-2xl border border-border/70 bg-card/70 p-4 shadow-sm sm:p-5">
-          <div className="mb-3 flex flex-wrap gap-2">
-            {filterTabs.map((tab) => (
-              <button
-                key={tab}
-                type="button"
-                onClick={() => setActiveFilter(tab)}
-                className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
-                  activeFilter === tab
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-border bg-background text-muted-foreground hover:border-primary/40'
-                }`}
-              >
-                {tab.replace('_', ' ')}
-              </button>
-            ))}
+          <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-primary">Case Board</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Review assigned incidents, update status, and add operational notes.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {filterTabs.map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setActiveFilter(tab)}
+                  className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+                    activeFilter === tab
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border bg-background text-muted-foreground hover:border-primary/40'
+                  }`}
+                >
+                  {tab.replace('_', ' ')}
+                </button>
+              ))}
+            </div>
           </div>
 
           {isLoading ? <CardGridSkeleton /> : null}
@@ -203,7 +409,7 @@ export default function NgoDashboardPage() {
           ) : null}
 
           {!isLoading && !error && !filteredCases.length ? (
-            <div className="rounded-lg border bg-white p-6 text-sm text-gray-600">
+            <div className="rounded-xl border border-dashed bg-background/80 p-6 text-sm text-muted-foreground">
               No cases found for the selected filter.
             </div>
           ) : null}
@@ -217,21 +423,124 @@ function MetricCard({
   title,
   value,
   icon,
+  description,
   tone = 'default',
 }: {
   title: string;
   value: number;
   icon: React.ReactNode;
-  tone?: 'default' | 'alert';
+  description: string;
+  tone?: 'default' | 'alert' | 'success' | 'info';
 }) {
+  const toneClass = {
+    default: 'border-border/70 bg-card/70 text-primary',
+    alert: 'border-rose-200 bg-rose-50/50 text-rose-700',
+    success: 'border-emerald-200 bg-emerald-50/50 text-emerald-700',
+    info: 'border-sky-200 bg-sky-50/50 text-sky-700',
+  }[tone];
+
   return (
-    <div className={`rounded-2xl border p-4 shadow-sm ${tone === 'alert' ? 'border-rose-200 bg-rose-50/40' : 'border-border/70 bg-card/70'}`}>
+    <div className={`rounded-2xl border p-4 shadow-sm ${toneClass}`}>
       <div className="mb-2 flex items-center justify-between text-muted-foreground">
         <p className="text-xs font-semibold uppercase tracking-wide">{title}</p>
         {icon}
       </div>
-      <p className="text-2xl font-bold text-primary">{value}</p>
+      <p className="text-2xl font-bold">{value}</p>
+      <p className="mt-2 text-xs leading-5 text-muted-foreground">{description}</p>
     </div>
+  );
+}
+
+function BriefingRow({ label, value, alert = false }: { label: string; value: number; alert?: boolean }) {
+  return (
+    <div className="flex items-center justify-between rounded-lg border bg-card px-3 py-2">
+      <span className="text-sm text-muted-foreground">{label}</span>
+      <span className={`text-sm font-semibold ${alert ? 'text-rose-700' : 'text-primary'}`}>{value}</span>
+    </div>
+  );
+}
+
+function ProgressRow({
+  label,
+  value,
+  total,
+  tone,
+}: {
+  label: string;
+  value: number;
+  total: number;
+  tone: 'warning' | 'info' | 'success';
+}) {
+  const percentage = Math.round((value / total) * 100);
+  const barClass = {
+    warning: 'bg-amber-500',
+    info: 'bg-sky-500',
+    success: 'bg-emerald-500',
+  }[tone];
+
+  return (
+    <div>
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <span className="text-sm font-medium text-foreground">{label}</span>
+        <span className="text-sm text-muted-foreground">{value}</span>
+      </div>
+      <div className="h-2 overflow-hidden rounded-full bg-muted">
+        <div className={`h-full rounded-full ${barClass}`} style={{ width: `${percentage}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function InsightCard({
+  icon,
+  label,
+  value,
+  detail,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+  detail: string;
+}) {
+  return (
+    <div className="rounded-xl border bg-background/80 p-3">
+      <div className="mb-2 flex items-center justify-between text-muted-foreground">
+        <span className="text-xs font-semibold uppercase tracking-wide">{label}</span>
+        {icon}
+      </div>
+      <p className="text-xl font-bold text-primary">{value}</p>
+      <p className="mt-1 text-xs leading-5 text-muted-foreground">{detail}</p>
+    </div>
+  );
+}
+
+function PriorityCaseRow({ item }: { item: NgoCase }) {
+  return (
+    <div className="rounded-xl border bg-background/80 p-3">
+      <div className="mb-2 flex items-start justify-between gap-2">
+        <div>
+          <p className="font-medium text-primary">{item.report.type.replace('_', ' ')}</p>
+          <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{item.report.description}</p>
+        </div>
+        <Badge variant="destructive">{item.priority}</Badge>
+      </div>
+      <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+        <span className="inline-flex items-center gap-1">
+          <MapPin className="size-3.5" />
+          {item.report.location}
+        </span>
+        <span>{item.status.replace('_', ' ')}</span>
+        <span>{new Date(item.createdAt).toLocaleDateString()}</span>
+      </div>
+    </div>
+  );
+}
+
+function isSameDay(left: Date, right: Date) {
+  return (
+    left.getFullYear() === right.getFullYear() &&
+    left.getMonth() === right.getMonth() &&
+    left.getDate() === right.getDate()
   );
 }
 

@@ -26,7 +26,7 @@ import { Button } from '@/components/ui/button';
 import { LoginFormSkeleton } from '@/components/shared/LoadingSkeletons';
 
 type LoginFormValues = z.infer<typeof loginSchema>;
-type DemoRole = 'user' | 'moderator' | 'ngoadmin' | 'ngo';
+type DemoRole = 'user' | 'moderator' | 'ngoadmin' ;
 
 type ApiErrorShape = {
   response?: {
@@ -63,7 +63,7 @@ function LoginFormContent() {
       user: { email: 'testuser@gmail.com', password: 'test@user' },
       moderator: { email: 'testmoderator@gmail.com', password: 'test@moderator' },
       ngoadmin: { email: 'testngoadmin@gmail.com', password: 'test@ngoadmin' },
-      ngo: { email: 'testngo@gmail.com', password: 'test@ngo' },
+    
     }[role];
 
     setValue('email', creds.email);
@@ -133,7 +133,7 @@ function LoginFormContent() {
                 ['user', 'User'],
                 ['moderator', 'Moderator'],
                 ['ngoadmin', 'NGO Admin'],
-                ['ngo', 'NGO'],
+              
               ].map(([role, label]) => (
                 <Button
                   key={role}

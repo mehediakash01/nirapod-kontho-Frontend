@@ -112,12 +112,12 @@ export default function PendingReportCard({ report, onAction, isUpdating }: Pend
   };
 
   return (
-    <Card className="border-border/80 bg-white shadow-sm">
+    <Card className="border-border/80 bg-card/80 shadow-sm">
       <CardHeader className="border-b border-border/70">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-2">
-            <CardTitle className="text-primary">{report.type.replaceAll('_', ' ')}</CardTitle>
-            <div className="flex flex-wrap items-center gap-2">
+            <CardTitle className="text-foreground">{report.type.replaceAll('_', ' ')}</CardTitle>
+            <div className="flex flex-wrap items-center gap-2 text-foreground">
               <Badge variant="outline" className="uppercase">
                 {report.status}
               </Badge>
@@ -127,7 +127,7 @@ export default function PendingReportCard({ report, onAction, isUpdating }: Pend
             </div>
           </div>
 
-          <div className="rounded-lg border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+          <div className="rounded-lg border bg-background/80 px-3 py-2 text-xs text-muted-foreground">
             <p className="flex items-center gap-1">
               <UserRound className="size-3.5" />
               {report.reporterInsight?.label ?? 'Reporter profile unavailable'}
@@ -138,21 +138,21 @@ export default function PendingReportCard({ report, onAction, isUpdating }: Pend
 
       <CardContent className="space-y-5">
         <div className="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-lg border bg-muted/30 p-3">
+          <div className="rounded-lg border bg-background/80 p-3">
             <p className="mb-1 flex items-center gap-1 text-xs text-muted-foreground">
               <CalendarClock className="size-3.5" /> Incident Date
             </p>
             <p className="font-medium text-foreground">{formatDate(report.incidentDate)}</p>
           </div>
 
-          <div className="rounded-lg border bg-muted/30 p-3">
+          <div className="rounded-lg border bg-background/80 p-3">
             <p className="mb-1 flex items-center gap-1 text-xs text-muted-foreground">
               <Clock3 className="size-3.5" /> Incident Time
             </p>
             <p className="font-medium text-foreground">{formatTime(report.incidentDate)}</p>
           </div>
 
-          <div className="rounded-lg border bg-muted/30 p-3 sm:col-span-2">
+          <div className="rounded-lg border bg-background/80 p-3 sm:col-span-2">
             <p className="mb-1 flex items-center gap-1 text-xs text-muted-foreground">
               <MapPin className="size-3.5" /> Location
             </p>
@@ -190,14 +190,14 @@ export default function PendingReportCard({ report, onAction, isUpdating }: Pend
                     <DialogTrigger asChild>
                       <button
                         type="button"
-                        className="group relative overflow-hidden rounded-lg border bg-muted/30 text-left transition hover:border-primary/60"
+                        className="group relative overflow-hidden rounded-lg border bg-background/80 text-left transition hover:border-primary/60"
                       >
                         {isImage ? (
                           <img src={item.fileUrl} alt="Evidence" className="h-28 w-full object-cover" />
                         ) : isVideo ? (
                           <video src={item.fileUrl} className="h-28 w-full object-cover" />
                         ) : (
-                          <div className="flex h-28 w-full items-center justify-center bg-muted/70">
+                          <div className="flex h-28 w-full items-center justify-center bg-muted/40">
                             {item.fileType.startsWith('audio/') ? (
                               <FileAudio className="size-6 text-muted-foreground" />
                             ) : (
@@ -239,7 +239,7 @@ export default function PendingReportCard({ report, onAction, isUpdating }: Pend
           )}
         </div>
 
-        <div className="space-y-2 rounded-lg border bg-muted/20 p-3">
+        <div className="space-y-2 rounded-lg border bg-background/80 p-3">
           <div className="flex items-center justify-between">
             <h4 className="text-sm font-semibold text-foreground">Voice Note</h4>
             {report.voiceNoteUrl ? (
