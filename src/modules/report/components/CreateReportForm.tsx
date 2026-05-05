@@ -298,8 +298,8 @@ export default function CreateReportForm() {
     >
       <div className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-xl font-bold text-primary sm:text-2xl">Create Safety Report</h2>
-          <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+          <h2 className="text-xl font-bold dark:text-black sm:text-2xl">Create Safety Report</h2>
+          <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold dark:text-black">
             Step {currentStep} of 3
           </span>
         </div>
@@ -314,13 +314,13 @@ export default function CreateReportForm() {
 
       {currentStep === 1 ? (
         <section className="space-y-4">
-          <h3 className="text-lg font-semibold text-foreground">Step 1: Incident Basics</h3>
+          <h3 className="text-lg font-semibold dark:text-black">Step 1: Incident Basics</h3>
 
           <div className="space-y-1">
-            <label className="text-sm font-medium text-gray-700">Incident Type</label>
+            <label className="text-sm font-medium dark:text-black">Incident Type</label>
             <select
               {...register('type', { required: 'Incident type is required.' })}
-              className="h-11 w-full rounded-md border px-3 text-sm focus:border-primary focus:outline-none"
+              className="h-11 w-full rounded-md border text-black px-3 text-sm focus:border-primary focus:outline-none"
             >
               <option value="HARASSMENT">Harassment</option>
               <option value="DOMESTIC_VIOLENCE">Domestic Violence</option>
@@ -332,11 +332,11 @@ export default function CreateReportForm() {
           </div>
 
           <div className="space-y-1">
-            <label className="text-sm font-medium text-gray-700">Incident Date & Time</label>
+            <label className="text-sm font-medium dark:text-black">Incident Date & Time</label>
             <input
               type="datetime-local"
               {...register('incidentDate', { required: 'Incident date and time is required.' })}
-              className="h-11 w-full rounded-md border px-3 text-sm focus:border-primary focus:outline-none"
+              className="h-11 w-full text-black rounded-md border px-3 text-sm focus:border-primary focus:outline-none"
             />
             {errors.incidentDate ? (
               <p className="text-xs text-red-600">{errors.incidentDate.message}</p>
@@ -344,7 +344,7 @@ export default function CreateReportForm() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Severity Level</label>
+            <label className="text-sm font-medium dark:text-black">Severity Level</label>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
               {(['MILD', 'MODERATE', 'URGENT'] as SeverityOption[]).map((level) => (
                 <button
@@ -354,7 +354,7 @@ export default function CreateReportForm() {
                   className={`rounded-md border px-3 py-2 text-sm font-semibold transition ${
                     severity === level
                       ? 'border-primary bg-primary text-white'
-                      : 'border-gray-300 bg-white text-gray-700 hover:border-primary/60'
+                      : 'border-gray-300 bg-white dark:text-black hover:border-primary/60'
                   }`}
                 >
                   {level === 'MILD' ? 'Mild' : level === 'MODERATE' ? 'Moderate' : 'Urgent'}
@@ -372,7 +372,7 @@ export default function CreateReportForm() {
 
       {currentStep === 2 ? (
         <section className="space-y-4">
-          <h3 className="text-lg font-semibold text-foreground">Step 2: Location & Privacy</h3>
+          <h3 className="text-lg font-semibold dark:text-black">Step 2: Location & Privacy</h3>
 
           <LocationMapPicker
             location={watch('location') || ''}
@@ -386,7 +386,7 @@ export default function CreateReportForm() {
           />
 
           <div className="space-y-1">
-            <label className="text-sm font-medium text-gray-700">Location</label>
+            <label className="text-sm font-medium dark:text-black">Location</label>
             <input
               {...register('location', {
                 required: 'Location is required.',
@@ -396,14 +396,14 @@ export default function CreateReportForm() {
                 },
               })}
               placeholder="Area, landmark, road, or district"
-              className="h-11 w-full rounded-md border px-3 text-sm focus:border-primary focus:outline-none"
+              className="h-11 w-full rounded-md text-black/80 border px-3 text-sm focus:border-primary focus:outline-none"
             />
             {errors.location ? <p className="text-xs text-red-600">{errors.location.message}</p> : null}
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-700">Latitude (optional)</label>
+              <label className="text-sm font-medium dark:text-black">Latitude (optional)</label>
               <input
                 type="number"
                 step="any"
@@ -413,7 +413,7 @@ export default function CreateReportForm() {
               />
             </div>
             <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-700">Longitude (optional)</label>
+              <label className="text-sm font-medium dark:text-black">Longitude (optional)</label>
               <input
                 type="number"
                 step="any"
@@ -428,13 +428,13 @@ export default function CreateReportForm() {
             type="button"
             onClick={handleUseCurrentLocation}
             disabled={isLocating}
-            className="rounded-md border border-primary px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white disabled:opacity-60"
+            className="rounded-md border border-primary px-4 py-2 text-sm font-semibold dark:text-black transition hover:bg-primary hover:text-white disabled:opacity-60"
           >
             {isLocating ? 'Fetching location...' : 'Use Current Location'}
           </button>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Privacy Option</label>
+            <label className="text-sm font-medium dark:text-black">Privacy Option</label>
             <div className="grid gap-2 sm:grid-cols-2">
               <button
                 type="button"
@@ -442,7 +442,7 @@ export default function CreateReportForm() {
                 className={`rounded-md border px-3 py-2 text-left text-sm ${
                   privacyMode === 'FULLY_ANONYMOUS'
                     ? 'border-primary bg-primary text-white'
-                    : 'border-gray-300 bg-white text-gray-700'
+                    : 'border-gray-300 bg-white dark:text-black'
                 }`}
               >
                 <p className="font-semibold">Fully Anonymous</p>
@@ -455,7 +455,7 @@ export default function CreateReportForm() {
                 className={`rounded-md border px-3 py-2 text-left text-sm ${
                   privacyMode === 'ANONYMOUS_CONTACTABLE'
                     ? 'border-primary bg-primary text-white'
-                    : 'border-gray-300 bg-white text-gray-700'
+                    : 'border-gray-300 bg-white dark:text-black'
                 }`}
               >
                 <p className="font-semibold">Anonymous but Contactable</p>
@@ -469,10 +469,10 @@ export default function CreateReportForm() {
 
       {currentStep === 3 ? (
         <section className="space-y-4">
-          <h3 className="text-lg font-semibold text-foreground">Step 3: Evidence & Description</h3>
+          <h3 className="text-lg font-semibold dark:text-black">Step 3: Evidence & Description</h3>
 
           <div className="space-y-2 rounded-xl border border-primary/25 bg-primary/5 p-4">
-            <p className="text-sm font-semibold text-primary">Voice Note (Recommended)</p>
+            <p className="text-sm font-semibold dark:text-black">Voice Note (Recommended)</p>
             <p className="text-xs text-gray-600">
               Share your report in your own voice if typing is difficult. This can help moderators understand urgency better.
             </p>
@@ -499,7 +499,7 @@ export default function CreateReportForm() {
                 <button
                   type="button"
                   onClick={removeVoiceNote}
-                  className="rounded-lg border border-gray-300 px-4 py-3 text-sm font-semibold text-gray-700"
+                  className="rounded-lg border border-gray-300 px-4 py-3 text-sm font-semibold dark:text-black"
                 >
                   Remove Voice Note
                 </button>
@@ -512,13 +512,13 @@ export default function CreateReportForm() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Evidence Upload (Photos, Videos, Audio)</label>
+            <label className="text-sm font-medium dark:text-black">Evidence Upload (Photos, Videos, Audio)</label>
             <input
               type="file"
               multiple
               accept="image/*,video/*,audio/*"
               onChange={handleEvidenceChange}
-              className="block w-full rounded-md border p-2 text-sm"
+              className="block text-black/80 w-full rounded-md border p-2 text-sm"
             />
             <p className="text-xs text-gray-500">You can upload up to {MAX_EVIDENCE_FILES} files.</p>
 
@@ -546,7 +546,7 @@ export default function CreateReportForm() {
           </div>
 
           <div className="space-y-1">
-            <label className="text-sm font-medium text-gray-700">Description</label>
+            <label className="text-sm font-medium dark:text-black">Description</label>
             <textarea
               {...register('description', {
                 required: 'Description is required.',
@@ -557,7 +557,7 @@ export default function CreateReportForm() {
               })}
               placeholder="What happened? When did it start? Who was involved? Mention anything that can help verify your report."
               rows={6}
-              className="w-full rounded-md border p-3 text-sm focus:border-primary focus:outline-none"
+              className="w-full text-black/80 rounded-md border p-3 text-sm focus:border-primary focus:outline-none"
             />
             {errors.description ? (
               <p className="text-xs text-red-600">{errors.description.message}</p>
@@ -571,7 +571,7 @@ export default function CreateReportForm() {
           type="button"
           onClick={goPrevious}
           disabled={currentStep === 1 || isSubmitting}
-          className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 disabled:opacity-50"
+          className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold dark:text-black disabled:opacity-50"
         >
           Back
         </button>

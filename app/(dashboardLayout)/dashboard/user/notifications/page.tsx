@@ -36,10 +36,10 @@ export default function UserNotificationsPage() {
             <div
               key={notification.id}
               className={`rounded-lg border p-4 ${
-                notification.isRead ? 'bg-white' : 'bg-secondary/5 border-secondary/30'
+                notification.isRead ? 'bg-white text-black' : 'bg-secondary/5 border-secondary/30'
               }`}
             >
-              <p className="text-sm text-gray-800">{notification.message}</p>
+              <p className="text-sm ">{notification.message}</p>
               <div className="mt-3 flex items-center justify-between">
                 <span className="text-xs text-gray-500">
                   {new Date(notification.createdAt).toLocaleString()}

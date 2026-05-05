@@ -57,7 +57,7 @@ export default function UserDonationsPage() {
         {!isLoading && !error && data?.length ? (
           <div className="overflow-x-auto rounded-lg border bg-white">
             <table className="min-w-full text-sm">
-              <thead className="border-b bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500">
+              <thead className="border-b bg-gray-50 text-left text-xs uppercase tracking-wide dark:text-black">
                 <tr>
                   <th className="px-4 py-3">Date</th>
                   <th className="px-4 py-3">Amount</th>
@@ -68,8 +68,8 @@ export default function UserDonationsPage() {
               <tbody>
                 {data.map((item) => (
                   <tr key={item.id} className="border-b last:border-b-0">
-                    <td className="px-4 py-3">{new Date(item.createdAt).toLocaleString()}</td>
-                    <td className="px-4 py-3 font-medium">${item.amount.toFixed(2)}</td>
+                    <td className="px-4 py-3 dark:text-black/80">{new Date(item.createdAt).toLocaleString()}</td>
+                    <td className="px-4 py-3 font-medium dark:text-black/80">${item.amount.toFixed(2)}</td>
                     <td className="px-4 py-3">
                       <span
                         className={`rounded px-2 py-1 text-xs font-medium ${

@@ -56,12 +56,12 @@ export default function FAQ() {
         transition={{ duration: 0.5 }}
         className="mx-auto max-w-4xl text-center"
       >
-        <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/70 px-4 py-2">
-          <HelpCircle size={16} className="text-primary" />
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">FAQ</span>
+        <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white px-4 py-2">
+          <HelpCircle size={16} className="dark:text-black" />
+          <span className="text-xs font-semibold uppercase tracking-[0.16em] dark:text-black">FAQ</span>
         </div>
 
-        <h2 className="mt-6 text-balance text-3xl font-bold leading-tight text-primary sm:text-4xl lg:text-5xl">
+        <h2 className="mt-6 text-balance text-3xl font-bold leading-tight dark:text-white sm:text-4xl lg:text-5xl">
           Frequently Asked Questions
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-gray-600 sm:text-base">
@@ -92,7 +92,7 @@ export default function FAQ() {
               className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide transition-all ${
                 activeCategory === category
                   ? 'bg-gradient-to-r from-primary to-primary/80 text-white shadow-lg'
-                  : 'border border-primary/20 bg-white/80 text-primary hover:border-primary/40'
+                  : 'border border-primary/20 bg-white/80 dark:text-black hover:border-primary/40'
               }`}
             >
               {category}
@@ -118,11 +118,11 @@ export default function FAQ() {
                 className="w-full rounded-2xl border border-primary/10 bg-white p-6 shadow-sm transition-all duration-300 hover:border-primary/20 hover:shadow-md"
               >
                 <div className="flex items-start justify-between gap-4">
-                  <h3 className="text-left text-base font-semibold text-primary">{item.q}</h3>
+                  <h3 className="text-left text-base font-semibold dark:text-black">{item.q}</h3>
                   <motion.div
                     animate={{ rotate: expandedIndex === index ? 180 : 0 }}
                     transition={{ duration: 0.3 }}
-                    className="mt-0.5 flex-shrink-0 text-primary"
+                    className="mt-0.5 flex-shrink-0 dark:text-black"
                   >
                     <ChevronDown size={20} />
                   </motion.div>
@@ -130,7 +130,7 @@ export default function FAQ() {
 
                 {/* Category badge */}
                 <div className="mt-3 flex justify-start">
-                  <span className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary border border-primary/20">
+                  <span className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-medium dark:text-black border border-primary/20">
                     {item.category}
                   </span>
                 </div>
@@ -147,7 +147,7 @@ export default function FAQ() {
                     className="overflow-hidden"
                   >
                     <div className="rounded-2xl border border-secondary/20 bg-gradient-to-br from-secondary/5 to-transparent p-6">
-                      <p className="text-sm leading-relaxed text-gray-700">{item.a}</p>
+                      <p className="text-sm leading-relaxed dark:text-white">{item.a}</p>
 
                       {/* Helpful action */}
                       <div className="mt-4 flex items-center gap-2 pt-4 border-t border-secondary/20">
@@ -155,14 +155,14 @@ export default function FAQ() {
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          className="ml-auto rounded-lg bg-primary/10 px-3 py-1 text-xs font-semibold text-primary hover:bg-primary/20 transition-colors"
+                          className="ml-auto rounded-lg bg-primary/10 px-3 py-1 text-xs font-semibold dark:text-white hover:bg-primary/20 transition-colors"
                         >
                           Yes
                         </motion.button>
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          className="rounded-lg bg-muted px-3 py-1 text-xs font-semibold text-gray-600 hover:bg-gray-300 transition-colors"
+                          className="rounded-lg bg-muted px-3 py-1 text-xs font-semibold dark:white hover:bg-gray-300 dark:hover:bg-black transition-colors"
                         >
                           No
                         </motion.button>
@@ -195,8 +195,8 @@ export default function FAQ() {
         transition={{ delay: 0.2, duration: 0.5 }}
         className="mx-auto mt-12 max-w-4xl rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent p-6 text-center"
       >
-        <p className="text-sm font-semibold text-gray-700">Didn't find what you're looking for?</p>
-        <p className="mt-2 text-xs text-gray-600">Contact us at support or visit our help center for more information.</p>
+        <p className="text-sm font-semibold dark:text-white">Didn't find what you're looking for?</p>
+        <p className="mt-2 text-xs dark:text-white">Contact us at support or visit our help center for more information.</p>
       </motion.div>
     </section>
   );
