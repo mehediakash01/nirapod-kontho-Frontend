@@ -37,7 +37,7 @@ export default function RegisterPage() {
       {/* ── Full-page split background ───────────────────────── */}
       <div className="pointer-events-none absolute inset-0 flex">
         {/* Left panel — light */}
-        <div className="w-full md:w-1/2 bg-gradient-to-br from-white via-secondary/[0.03] to-primary/[0.05]" />
+        <div className="w-full md:w-1/2 " />
         {/* Right panel — dark */}
         <div className="hidden md:block w-1/2 bg-primary" />
       </div>
@@ -131,14 +131,14 @@ export default function RegisterPage() {
             {/* Main copy */}
             <div className="space-y-8">
               <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-secondary/40 bg-secondary/15 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-secondary mb-6">
+                <div className="inline-flex items-center gap-2 rounded-full border border-secondary/40 bg-secondary/15 px-3.5 py-1.5 dark:text-black text-xs font-bold uppercase tracking-[0.12em] text-secondary mb-6">
                   <ShieldPlus className="h-3.5 w-3.5" />
                   Start Securely
                 </div>
 
-                <h1 className="text-[clamp(2rem,4vw,3rem)] font-black leading-[0.95] tracking-[-0.03em] text-white">
+                <h1 className="text-[clamp(2rem,4vw,3rem)] dark:text-black  font-black leading-[0.95] tracking-[-0.03em] text-white ">
                   Report with<br />Complete<br />
-                  <span className="bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-secondary to-accent   dark:text-black bg-clip-text text-transparent">
                     Confidence
                   </span>
                 </h1>
@@ -168,7 +168,7 @@ export default function RegisterPage() {
             {/* Footer link */}
             <p className="text-xs text-white/40">
               Already have an account?{' '}
-              <Link href="/login" className="inline-flex items-center gap-1 font-bold text-secondary hover:text-secondary/80 transition-colors">
+              <Link href="/login" className="inline-flex items-center gap-1 font-bold text-secondary hover:text-secondary/80 transition-colors dark:text-black">
                 Sign in <ArrowRight className="h-3 w-3" />
               </Link>
             </p>

@@ -61,7 +61,7 @@ export default function ContactPage() {
     <main className="relative overflow-hidden">
       {/* Background */}
       <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-white via-primary/[0.025] to-secondary/[0.04]" />
+        <div className="absolute inset-0 " />
         <div className="absolute -left-48 top-0 h-[500px] w-[500px] rounded-full bg-primary/8 blur-[100px]" />
         <div className="absolute right-0 top-32 h-[400px] w-[400px] rounded-full bg-secondary/8 blur-[100px]" />
         <div className="absolute inset-0 opacity-[0.022]" style={{ backgroundImage: 'linear-gradient(var(--color-primary,#1a4f9c) 1px,transparent 1px),linear-gradient(90deg,var(--color-primary,#1a4f9c) 1px,transparent 1px)', backgroundSize: '72px 72px' }} />
@@ -103,12 +103,12 @@ export default function ContactPage() {
               const Icon = c.icon;
               return (
                 <FadeUp key={c.label} delay={i * 0.1}>
-                  <article className={`group relative overflow-hidden rounded-3xl border ${c.border} bg-white/80 backdrop-blur-sm p-7 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1`}>
+                  <article className={`group relative overflow-hidden rounded-3xl border ${c.border} bg-white backdrop-blur-sm p-7 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1`}>
                     <div className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl ${c.bg} mb-5`}>
                       <Icon size={20} className={c.accent} />
                     </div>
                     <p className={`text-[10px] font-bold uppercase tracking-[0.16em] ${c.accent} mb-2`}>{c.tag}</p>
-                    <h2 className="text-base font-bold text-foreground leading-snug mb-3">{c.label}</h2>
+                    <h2 className="text-base font-bold text-black/80 leading-snug mb-3">{c.label}</h2>
                     <a href={`mailto:${c.email}`}
                       className={`inline-flex items-center gap-1.5 text-sm font-semibold ${c.accent} hover:underline break-all`}>
                       <Send size={12} />{c.email}
@@ -136,13 +136,13 @@ export default function ContactPage() {
           <div className="space-y-3">
             {faqs.map((f, i) => (
               <FadeUp key={i} delay={i * 0.08}>
-                <div className="group rounded-2xl border border-primary/8 bg-white/70 backdrop-blur-sm p-6 transition-all hover:border-primary/20 hover:shadow-md hover:bg-white">
+                <div className="group rounded-2xl border border-primary/8 bg-white backdrop-blur-sm p-6 transition-all hover:border-primary/20 hover:shadow-md hover:bg-white">
                   <div className="flex items-start gap-4">
                     <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-primary/8 mt-0.5">
                       <MessageSquare size={14} className="text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-foreground">{f.q}</p>
+                      <p className="text-sm font-bold text-black/80">{f.q}</p>
                       <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{f.a}</p>
                     </div>
                   </div>
@@ -165,7 +165,7 @@ export default function ContactPage() {
             <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/60 mb-2">In crisis right now?</p>
-                <h3 className="text-xl font-black text-white">Do not wait for a reply — call <span className="text-secondary">999</span> or <span className="text-secondary">109</span>.</h3>
+                <h3 className="text-xl font-black text-white">Do not wait for a reply — call <span className="text-secondary dark:text-black ">999</span> or <span className="text-secondary dark:text-black">109</span>.</h3>
                 <p className="mt-1.5 text-sm text-white/65">These hotlines are live around the clock for immediate help.</p>
               </div>
               <a href="tel:999" className="group inline-flex flex-shrink-0 items-center gap-2 rounded-2xl bg-white px-7 py-4 text-sm font-bold text-primary shadow-lg transition-all hover:shadow-xl hover:-translate-y-0.5">

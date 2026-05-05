@@ -64,7 +64,7 @@ export default function Hero() {
             Active Protection Network
           </div>
 
-          <h1 className="mt-8 max-w-4xl font-serif text-[clamp(3.2rem,8vw,6.5rem)] font-semibold leading-[0.92] tracking-normal text-white">
+          <h1 className="mt-8 max-w-4xl font-serif text-[clamp(3.2rem,7vw,5.5rem)] font-semibold leading-[0.95] tracking-normal text-white">
             Speak safely.
             <span className="block text-white/90">Move toward help.</span>
           </h1>

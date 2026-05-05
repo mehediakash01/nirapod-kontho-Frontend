@@ -106,7 +106,7 @@ export default function RegisterForm() {
               <div className="w-full border-t border-primary/15" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white/70 px-2 text-muted-foreground">Or sign up with email</span>
+              <span className="bg-white/70 dark:text-black px-2 text-muted-foreground">Or sign up with email</span>
             </div>
           </div>
 

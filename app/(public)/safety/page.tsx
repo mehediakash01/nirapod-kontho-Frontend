@@ -56,7 +56,7 @@ export default function SafetyPage() {
     <main className="relative overflow-hidden">
       {/* Background */}
       <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-white via-primary/[0.025] to-secondary/[0.04]" />
+        <div className="absolute inset-0 " />
         <div className="absolute -left-48 top-0 h-[500px] w-[500px] rounded-full bg-primary/8 blur-[100px]" />
         <div className="absolute right-0 top-32 h-[400px] w-[400px] rounded-full bg-secondary/8 blur-[100px]" />
         <div className="absolute inset-0 opacity-[0.022]" style={{ backgroundImage: 'linear-gradient(var(--color-primary,#1a4f9c) 1px,transparent 1px),linear-gradient(90deg,var(--color-primary,#1a4f9c) 1px,transparent 1px)', backgroundSize: '72px 72px' }} />
@@ -111,7 +111,7 @@ export default function SafetyPage() {
               const Icon = c.icon;
               return (
                 <FadeUp key={c.title} delay={i * 0.09}>
-                  <article className="group relative overflow-hidden rounded-3xl border border-primary/10 bg-white/80 backdrop-blur-sm p-7 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                  <article className="group relative overflow-hidden rounded-3xl border border-primary/10 backdrop-blur-sm p-7 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                     <span aria-hidden className="pointer-events-none absolute -right-2 -top-3 select-none text-[5.5rem] font-black leading-none text-primary/[0.06]">{c.num}</span>
                     <div className="flex items-start gap-4">
                       <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-primary/8">
@@ -144,7 +144,7 @@ export default function SafetyPage() {
               const Icon = p.icon;
               return (
                 <FadeUp key={p.title} delay={i * 0.08}>
-                  <div className="group flex gap-4 rounded-2xl border border-primary/8 bg-white/70 backdrop-blur-sm p-5 transition-all hover:border-primary/20 hover:shadow-md hover:bg-white">
+                  <div className="group flex gap-4 rounded-2xl border border-primary/8  backdrop-blur-sm p-5 transition-all hover:border-primary/20 hover:shadow-md hover:bg-white">
                     <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-secondary/10">
                       <Icon size={17} className="text-secondary" />
                     </div>
@@ -175,7 +175,7 @@ export default function SafetyPage() {
               </div>
               <h3 className="text-2xl font-black text-white leading-tight">
                 Your safety is the product.<br />
-                <span className="text-secondary">Not an afterthought.</span>
+                <span className="text-secondary dark:text-white">Not an afterthought.</span>
               </h3>
               <p className="mt-3 text-sm text-white/65 leading-relaxed">
                 Every architectural decision — from how we store case notes to what an NGO worker can view — was made with the protection of vulnerable people as the primary constraint.

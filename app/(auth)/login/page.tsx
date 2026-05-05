@@ -42,7 +42,7 @@ export default function LoginPage() {
         {/* Left panel — dark primary */}
         <div className="hidden md:block w-1/2 bg-primary" />
         {/* Right panel — off-white */}
-        <div className="w-full md:w-1/2 bg-gradient-to-br from-white via-primary/[0.03] to-secondary/[0.05]" />
+        <div className="w-full md:w-1/2 " />
       </div>
 
       {/* Decorative orbs */}
@@ -86,14 +86,14 @@ export default function LoginPage() {
             {/* Main copy */}
             <div className="space-y-8">
               <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-secondary/40 bg-secondary/15 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-secondary mb-6">
+                <div className="inline-flex dark:text-black items-center gap-2 rounded-full border border-secondary/40 bg-secondary/15 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-secondary mb-6">
                   <LockKeyhole className="h-3.5 w-3.5" />
                   Secure Access
                 </div>
 
                 <h1 className="text-[clamp(2rem,4vw,3rem)] font-black leading-[0.95] tracking-[-0.03em] text-white">
                   Welcome<br />Back to<br />
-                  <span className="bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-secondary dark:text-white to-accent bg-clip-text text-transparent">
                     Safer Reporting
                   </span>
                 </h1>
@@ -127,7 +127,7 @@ export default function LoginPage() {
               <div className="flex gap-6 border-t border-white/10 pt-6">
                 {stats.map((s) => (
                   <div key={s.label}>
-                    <div className="text-lg font-black text-secondary">{s.value}</div>
+                    <div className="text-lg font-black text-secondary dark:text-black">{s.value}</div>
                     <div className="text-[11px] text-white/45 mt-0.5">{s.label}</div>
                   </div>
                 ))}
@@ -137,7 +137,7 @@ export default function LoginPage() {
             {/* Footer link */}
             <p className="text-xs text-white/40">
               New to Nirapod Kontho?{' '}
-              <Link href="/register" className="inline-flex items-center gap-1 font-bold text-secondary hover:text-secondary/80 transition-colors">
+              <Link href="/register" className="inline-flex items-center gap-1 font-bold text-secondary hover:text-secondary/80 transition-colors dark:text-black">
                 Create account <ArrowRight className="h-3 w-3" />
               </Link>
             </p>

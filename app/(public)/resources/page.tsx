@@ -68,7 +68,7 @@ export default function ResourcesPage() {
     <main className="relative overflow-hidden">
       {/* Background */}
       <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-white via-primary/[0.025] to-secondary/[0.04]" />
+        <div className="absolute inset-0 " />
         <div className="absolute -left-48 top-0 h-[500px] w-[500px] rounded-full bg-primary/8 blur-[100px]" />
         <div className="absolute right-0 top-32 h-[400px] w-[400px] rounded-full bg-secondary/8 blur-[100px]" />
         <div className="absolute inset-0 opacity-[0.022]" style={{ backgroundImage: 'linear-gradient(var(--color-primary,#1a4f9c) 1px,transparent 1px),linear-gradient(90deg,var(--color-primary,#1a4f9c) 1px,transparent 1px)', backgroundSize: '72px 72px' }} />
@@ -110,7 +110,7 @@ export default function ResourcesPage() {
               const Icon = r.icon;
               return (
                 <FadeUp key={r.title} delay={i * 0.1}>
-                  <article className={`group relative overflow-hidden rounded-3xl border ${r.border} bg-white/80 backdrop-blur-sm p-7 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full`}>
+                  <article className={`group relative overflow-hidden rounded-3xl border ${r.border} bg-white backdrop-blur-sm p-7 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full`}>
                     <div className="flex items-start justify-between mb-5">
                       <div className={`flex h-11 w-11 items-center justify-center rounded-2xl ${r.bg}`}>
                         <Icon size={20} className={r.accent} />
@@ -118,7 +118,7 @@ export default function ResourcesPage() {
                       <span className={`text-[10px] font-bold uppercase tracking-[0.12em] px-2.5 py-1 rounded-full ${r.tagBg}`}>{r.tag}</span>
                     </div>
 
-                    <h2 className="text-base font-bold text-foreground mb-2">{r.title}</h2>
+                    <h2 className="text-base font-bold text-black mb-2">{r.title}</h2>
                     <p className="text-sm leading-relaxed text-muted-foreground flex-1">{r.details}</p>
 
                     <div className={`mt-5 pt-4 border-t ${r.border} flex items-center justify-between`}>
@@ -152,11 +152,11 @@ export default function ResourcesPage() {
               const Icon = t.icon;
               return (
                 <FadeUp key={i} delay={i * 0.08}>
-                  <div className="flex items-start gap-4 rounded-2xl border border-primary/8 bg-white/70 backdrop-blur-sm p-5 transition-all hover:border-primary/20 hover:shadow-md">
+                  <div className="flex items-start gap-4 rounded-2xl border border-primary/8 bg-white backdrop-blur-sm p-5 transition-all hover:border-primary/20 hover:shadow-md">
                     <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-primary/8 mt-0.5">
                       <Icon size={15} className="text-primary" />
                     </div>
-                    <p className="text-sm leading-relaxed text-foreground/80">{t.tip}</p>
+                    <p className="text-sm leading-relaxed text-black/80">{t.tip}</p>
                   </div>
                 </FadeUp>
               );
@@ -166,11 +166,11 @@ export default function ResourcesPage() {
 
         {/* ── CTA ROW ── */}
         <FadeUp>
-          <div className="relative overflow-hidden rounded-3xl border border-primary/10 bg-white/80 backdrop-blur-sm p-8 shadow-sm">
+          <div className="relative overflow-hidden rounded-3xl border border-primary/10 bg-white backdrop-blur-sm p-8 shadow-sm">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-secondary mb-2">Ready to act?</p>
-                <h3 className="text-xl font-black text-foreground">Start documenting your incident right now.</h3>
+                <h3 className="text-xl font-black text-black/80">Start documenting your incident right now.</h3>
                 <p className="mt-1.5 text-sm text-muted-foreground max-w-md">
                   The secure form takes under 2 minutes. Your details are encrypted from the first keystroke.
                 </p>
