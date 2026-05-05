@@ -18,15 +18,20 @@ import {
 import { Badge } from '@/components/ui/badge';
 import {
   ArrowDownWideNarrow,
+  ArrowRight,
   ArrowUpNarrowWide,
   Building2,
   ClipboardCheck,
   Handshake,
   Layers,
+  ListChecks,
   Plus,
   Search,
+  ShieldCheck,
+  SlidersHorizontal,
   Wallet,
 } from 'lucide-react';
+import { Pagination } from '@/components/shared/Pagination';
 import CreateNgoForm, { type CreateNgoFormValues } from '@/src/modules/super-admin/components/CreateNgoForm';
 import DashboardAnalytics from '@/components/shared/DashboardAnalytics';
 import {
@@ -38,9 +43,18 @@ import {
   getVerifiedReports,
   type AssignmentRecommendation,
   type ReportPriority,
+  type VerifiedReport,
 } from '@/src/modules/super-admin/services/super-admin.api';
 
 const PRIORITIES: ReportPriority[] = ['LOW', 'MEDIUM', 'HIGH'];
+const NGO_PAGE_SIZE = 6;
+const REPORT_PAGE_SIZE = 4;
+const SEVERITY_WEIGHT = {
+  URGENT: 4,
+  MODERATE: 3,
+  MILD: 2,
+  UNSPECIFIED: 1,
+};
 
 type AssignmentDraft = {
   ngoId: string;
@@ -50,6 +64,8 @@ type AssignmentDraft = {
 };
 
 type NgoSortKey = 'name' | 'createdAt' | 'openCases';
+type ReportSortKey = 'newest' | 'oldest' | 'severity';
+type ReportSeverityFilter = 'ALL' | 'URGENT' | 'MODERATE' | 'MILD' | 'UNSPECIFIED';
 
 const REPORT_TYPE_LABELS: Record<string, string> = {
   HARASSMENT: 'Harassment',
@@ -65,6 +81,11 @@ export default function SuperAdminDashboardPage() {
   const [ngoSearch, setNgoSearch] = useState('');
   const [sortKey, setSortKey] = useState<NgoSortKey>('createdAt');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [ngoPage, setNgoPage] = useState(1);
+  const [reportSearch, setReportSearch] = useState('');
+  const [reportSeverity, setReportSeverity] = useState<ReportSeverityFilter>('ALL');
+  const [reportSort, setReportSort] = useState<ReportSortKey>('newest');
+  const [reportPage, setReportPage] = useState(1);
 
   const analyticsQuery = useQuery({
     queryKey: ['super-admin-analytics'],
@@ -159,6 +180,26 @@ export default function SuperAdminDashboardPage() {
     [reportsQuery.data]
   );
 
+  const operationsSummary = useMemo(() => {
+    const reports = reportsQuery.data ?? [];
+    const assigned = reports.filter((report) => Boolean(report.case)).length;
+    const highPriority = reports.filter((report) => report.case?.priority === 'HIGH').length;
+    const ngoCount = ngosQuery.data?.length ?? 0;
+    const openCases = (ngosQuery.data ?? []).reduce(
+      (sum, ngo) =>
+        sum + ngo.cases.filter((item) => item.status === 'UNDER_REVIEW' || item.status === 'IN_PROGRESS').length,
+      0
+    );
+
+    return {
+      assigned,
+      unassigned: unassignedReports.length,
+      highPriority,
+      openCases,
+      averageLoad: ngoCount ? (openCases / ngoCount).toFixed(1) : '0.0',
+    };
+  }, [ngosQuery.data, reportsQuery.data, unassignedReports.length]);
+
   const recommendationsQuery = useQuery({
     queryKey: ['assignment-recommendations', unassignedReports.map((report) => report.id).join(',')],
     queryFn: async () => {
@@ -205,6 +246,52 @@ export default function SuperAdminDashboardPage() {
     });
   }, [ngosQuery.data, ngoSearch, sortDirection, sortKey]);
 
+  const paginatedNgos = useMemo(() => {
+    const start = (ngoPage - 1) * NGO_PAGE_SIZE;
+    return filteredAndSortedNgos.slice(start, start + NGO_PAGE_SIZE);
+  }, [filteredAndSortedNgos, ngoPage]);
+
+  const filteredAndSortedReports = useMemo(() => {
+    const query = reportSearch.trim().toLowerCase();
+
+    return unassignedReports
+      .filter((report) => {
+        const severity = report.severity ?? 'UNSPECIFIED';
+        const matchesSeverity = reportSeverity === 'ALL' || severity === reportSeverity;
+        const matchesSearch =
+          !query ||
+          `${report.type} ${report.description} ${report.location} ${severity}`.toLowerCase().includes(query);
+
+        return matchesSeverity && matchesSearch;
+      })
+      .sort((a, b) => sortReports(a, b, reportSort));
+  }, [reportSearch, reportSeverity, reportSort, unassignedReports]);
+
+  const paginatedReports = useMemo(() => {
+    const start = (reportPage - 1) * REPORT_PAGE_SIZE;
+    return filteredAndSortedReports.slice(start, start + REPORT_PAGE_SIZE);
+  }, [filteredAndSortedReports, reportPage]);
+
+  const updateNgoSearch = (value: string) => {
+    setNgoSearch(value);
+    setNgoPage(1);
+  };
+
+  const updateReportSearch = (value: string) => {
+    setReportSearch(value);
+    setReportPage(1);
+  };
+
+  const updateReportSeverity = (value: ReportSeverityFilter) => {
+    setReportSeverity(value);
+    setReportPage(1);
+  };
+
+  const updateReportSort = (value: ReportSortKey) => {
+    setReportSort(value);
+    setReportPage(1);
+  };
+
   const toggleSort = (nextKey: NgoSortKey) => {
     if (nextKey === sortKey) {
       setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
@@ -212,6 +299,7 @@ export default function SuperAdminDashboardPage() {
     }
     setSortKey(nextKey);
     setSortDirection(nextKey === 'name' ? 'asc' : 'desc');
+    setNgoPage(1);
   };
 
   const updateDraft = (reportId: string, patch: Partial<AssignmentDraft>) => {
@@ -263,34 +351,58 @@ export default function SuperAdminDashboardPage() {
       <div className="space-y-8">
         <DashboardAnalytics />
 
-        <section className="rounded-2xl border border-border/70 bg-card/60 p-5 shadow-sm backdrop-blur-xl sm:p-6">
-          <div className="flex flex-wrap items-end justify-between gap-4">
+        <section className="overflow-hidden rounded-2xl border border-border/70 bg-card/70 shadow-sm backdrop-blur-xl">
+          <div className="grid gap-6 p-5 sm:p-6 xl:grid-cols-[1.35fr_0.65fr]">
             <div>
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <ShieldCheck className="size-3.5" />
+                Platform Governance
+              </div>
               <h1 className="text-2xl font-bold text-primary sm:text-3xl">Super Admin Command Center</h1>
               <p className="mt-1 text-sm text-muted-foreground">
-                Manage NGOs, assign verified incidents, and oversee platform trust operations.
+                Manage NGO capacity, assign verified incidents, monitor risk, and keep platform operations accountable.
               </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <Button asChild variant="outline" className="gap-2">
+                  <a href="#ngo-registry">
+                    NGO Registry <ArrowRight className="size-4" />
+                  </a>
+                </Button>
+                <Button asChild variant="outline" className="gap-2">
+                  <a href="#assignment-queue">
+                    Assignment Queue <Handshake className="size-4" />
+                  </a>
+                </Button>
+              </div>
             </div>
 
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button className="gap-2">
-                  <Plus className="size-4" /> Create NGO & Admin
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                  <DialogTitle>Create NGO + Admin</DialogTitle>
-                  <DialogDescription>
-                    Create an NGO organization and provision its admin account in one workflow.
-                  </DialogDescription>
-                </DialogHeader>
-                <CreateNgoForm
-                  onSubmit={(values) => createNgoMutation.mutateAsync(values)}
-                  isSubmitting={createNgoMutation.isPending}
-                />
-              </DialogContent>
-            </Dialog>
+            <div className="rounded-xl border bg-background/80 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Operations Focus</p>
+              <div className="mt-4 space-y-3">
+                <MiniStat label="Unassigned verified reports" value={operationsSummary.unassigned} />
+                <MiniStat label="High priority assignments" value={operationsSummary.highPriority} />
+                <MiniStat label="Average active load / NGO" value={operationsSummary.averageLoad} />
+              </div>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="mt-4 w-full gap-2">
+                    <Plus className="size-4" /> Create NGO & Admin
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>Create NGO + Admin</DialogTitle>
+                    <DialogDescription>
+                      Create an NGO organization and provision its admin account in one workflow.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <CreateNgoForm
+                    onSubmit={(values) => createNgoMutation.mutateAsync(values)}
+                    isSubmitting={createNgoMutation.isPending}
+                  />
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </section>
 
@@ -325,17 +437,29 @@ export default function SuperAdminDashboardPage() {
           </section>
         ) : null}
 
+        <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <InsightCard label="Assigned Reports" value={operationsSummary.assigned} icon={<Handshake className="size-4" />} />
+          <InsightCard label="Unassigned Reports" value={operationsSummary.unassigned} icon={<ListChecks className="size-4" />} tone="warning" />
+          <InsightCard label="Open NGO Cases" value={operationsSummary.openCases} icon={<Layers className="size-4" />} />
+          <InsightCard label="High Priority" value={operationsSummary.highPriority} icon={<ClipboardCheck className="size-4" />} tone="danger" />
+        </section>
+
         <section className="grid gap-6 xl:grid-cols-[1.25fr_1fr]">
-          <div className="rounded-2xl border border-border/70 bg-card/70 p-4 shadow-sm backdrop-blur-md sm:p-5">
+          <div id="ngo-registry" className="rounded-2xl border border-border/70 bg-card/70 p-4 shadow-sm backdrop-blur-md sm:p-5">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-lg font-semibold text-primary">NGO Registry</h2>
+              <div>
+                <h2 className="text-lg font-semibold text-primary">NGO Registry</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Search partner organizations and sort by capacity or onboarding date.
+                </p>
+              </div>
 
               <div className="flex w-full items-center gap-2 sm:w-auto">
                 <div className="relative w-full sm:w-72">
                   <Search className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     value={ngoSearch}
-                    onChange={(event) => setNgoSearch(event.target.value)}
+                    onChange={(event) => updateNgoSearch(event.target.value)}
                     placeholder="Search NGO by name, email, phone"
                     className="pl-8"
                   />
@@ -364,7 +488,7 @@ export default function SuperAdminDashboardPage() {
                 </div>
 
                 <div className="divide-y">
-                  {filteredAndSortedNgos.map((ngo) => {
+                  {paginatedNgos.map((ngo) => {
                     const openCases = ngo.cases.filter(
                       (item) => item.status === 'UNDER_REVIEW' || item.status === 'IN_PROGRESS'
                     ).length;
@@ -392,6 +516,12 @@ export default function SuperAdminDashboardPage() {
                     );
                   })}
                 </div>
+                <Pagination
+                  currentPage={ngoPage}
+                  totalCount={filteredAndSortedNgos.length}
+                  pageSize={NGO_PAGE_SIZE}
+                  onPageChange={setNgoPage}
+                />
               </div>
             )}
           </div>
@@ -417,7 +547,7 @@ export default function SuperAdminDashboardPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-border/70 bg-card/70 p-4 shadow-sm backdrop-blur-md sm:p-5">
+        <section id="assignment-queue" className="rounded-2xl border border-border/70 bg-card/70 p-4 shadow-sm backdrop-blur-md sm:p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-lg font-semibold text-primary">Assign Verified Reports to NGO</h2>
@@ -425,7 +555,44 @@ export default function SuperAdminDashboardPage() {
                 Match verified incidents to the most appropriate NGO with a priority level.
               </p>
             </div>
-            <Badge variant="outline">{unassignedReports.length} unassigned</Badge>
+            <Badge variant="outline">{filteredAndSortedReports.length} matching</Badge>
+          </div>
+
+          <div className="mb-4 grid gap-3 lg:grid-cols-[1fr_auto_auto]">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={reportSearch}
+                onChange={(event) => updateReportSearch(event.target.value)}
+                placeholder="Search verified reports by type, location, severity, or description"
+                className="h-10 pl-9"
+              />
+            </div>
+            <label className="flex items-center gap-2 rounded-lg border bg-background px-3">
+              <SlidersHorizontal className="size-4 text-muted-foreground" />
+              <select
+                value={reportSeverity}
+                onChange={(event) => updateReportSeverity(event.target.value as ReportSeverityFilter)}
+                className="h-10 bg-transparent text-sm outline-none"
+                aria-label="Filter assignment queue by severity"
+              >
+                <option value="ALL">All severities</option>
+                <option value="URGENT">Urgent</option>
+                <option value="MODERATE">Moderate</option>
+                <option value="MILD">Mild</option>
+                <option value="UNSPECIFIED">Unspecified</option>
+              </select>
+            </label>
+            <select
+              value={reportSort}
+              onChange={(event) => updateReportSort(event.target.value as ReportSortKey)}
+              className="h-10 rounded-lg border bg-background px-3 text-sm outline-none"
+              aria-label="Sort assignment queue"
+            >
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="severity">Highest severity</option>
+            </select>
           </div>
 
           {reportsQuery.isLoading ? <CardGridSkeleton /> : null}
@@ -434,14 +601,14 @@ export default function SuperAdminDashboardPage() {
             <ListSkeleton count={2} />
           ) : null}
 
-          {!reportsQuery.isLoading && !reportsQuery.error && !unassignedReports.length ? (
+          {!reportsQuery.isLoading && !reportsQuery.error && !filteredAndSortedReports.length ? (
             <p className="rounded-xl border border-dashed p-4 text-sm text-muted-foreground">
-              No unassigned verified reports found.
+              No unassigned verified reports match the current search and filters.
             </p>
           ) : null}
 
           <div className="grid gap-4 lg:grid-cols-2">
-            {unassignedReports.map((report) => {
+            {paginatedReports.map((report) => {
               const draft = assignmentDrafts[report.id] ?? {
                 ngoId: '',
                 priority: 'HIGH' as const,
@@ -559,6 +726,12 @@ export default function SuperAdminDashboardPage() {
               );
             })}
           </div>
+          <Pagination
+            currentPage={reportPage}
+            totalCount={filteredAndSortedReports.length}
+            pageSize={REPORT_PAGE_SIZE}
+            onPageChange={setReportPage}
+          />
         </section>
       </div>
     </ProtectedRoute>
@@ -588,11 +761,51 @@ function MetricCard({
   );
 }
 
-function MiniStat({ label, value }: { label: string; value: number }) {
+function InsightCard({
+  label,
+  value,
+  icon,
+  tone = 'default',
+}: {
+  label: string;
+  value: string | number;
+  icon: React.ReactNode;
+  tone?: 'default' | 'warning' | 'danger';
+}) {
+  const toneClass = {
+    default: 'text-primary',
+    warning: 'text-amber-700',
+    danger: 'text-rose-700',
+  }[tone];
+
+  return (
+    <div className="rounded-2xl border border-border/70 bg-card/70 p-4 shadow-sm">
+      <div className="mb-2 flex items-center justify-between text-muted-foreground">
+        <p className="text-xs font-semibold uppercase tracking-wide">{label}</p>
+        {icon}
+      </div>
+      <p className={`text-2xl font-bold ${toneClass}`}>{value}</p>
+    </div>
+  );
+}
+
+function MiniStat({ label, value }: { label: string; value: number | string }) {
   return (
     <div className="flex items-center justify-between rounded-lg border bg-background/80 px-3 py-2">
       <p className="text-sm text-muted-foreground">{label}</p>
       <p className="text-sm font-semibold text-primary">{value}</p>
     </div>
   );
+}
+
+function sortReports(a: VerifiedReport, b: VerifiedReport, sortKey: ReportSortKey) {
+  if (sortKey === 'oldest') {
+    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+  }
+
+  if (sortKey === 'severity') {
+    return SEVERITY_WEIGHT[b.severity ?? 'UNSPECIFIED'] - SEVERITY_WEIGHT[a.severity ?? 'UNSPECIFIED'];
+  }
+
+  return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 }
