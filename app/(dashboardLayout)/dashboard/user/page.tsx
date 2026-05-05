@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useNotifications } from '@/src/modules/notification/hooks/useNotifications';
 import { useAuth } from '@/src/hooks/useAuth';
 import { Shield, Mail, Clock } from 'lucide-react';
+import DashboardAnalytics from '@/components/shared/DashboardAnalytics';
 
 
 export default function UserDashboard() {
@@ -63,6 +64,8 @@ export default function UserDashboard() {
           + Report Incident
         </Link>
       </div>
+
+      <DashboardAnalytics />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">

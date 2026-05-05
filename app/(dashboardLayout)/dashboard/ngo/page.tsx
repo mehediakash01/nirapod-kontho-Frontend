@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
+import DashboardAnalytics from '@/components/shared/DashboardAnalytics';
 import { Badge } from '@/components/ui/badge';
 import CaseCard from '@/src/modules/ngo/components/CaseCard';
 import { getMyCases, updateCase, type CaseStatus } from '@/src/modules/ngo/services/ngo.api';
@@ -104,6 +105,8 @@ export default function NgoDashboardPage() {
   return (
     <ProtectedRoute allowedRoles={['NGO_ADMIN']}>
       <div className="space-y-6">
+        <DashboardAnalytics />
+
         <section className="rounded-2xl border border-border/70 bg-card/70 p-5 shadow-sm backdrop-blur-sm sm:p-6">
           <h1 className="text-2xl font-bold text-primary sm:text-3xl">NGO Case Command</h1>
           <p className="mt-1 text-sm text-muted-foreground">

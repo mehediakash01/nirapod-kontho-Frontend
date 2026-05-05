@@ -6,6 +6,7 @@ import { ArrowRight, ClipboardCheck, Clock3, ShieldCheck, Siren, XCircle } from 
 import ProtectedRoute from '@/components/shared/ProtectedRoute';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import DashboardAnalytics from '@/components/shared/DashboardAnalytics';
 import { Badge } from '@/components/ui/badge';
 import {
   getRecentDecisions,
@@ -41,6 +42,8 @@ export default function ModeratorDashboardPage() {
   return (
     <ProtectedRoute allowedRoles={['MODERATOR', 'SUPER_ADMIN']}>
       <div className="space-y-6">
+        <DashboardAnalytics />
+
         <div>
           <h1 className="text-2xl font-bold text-primary">Moderator Overview</h1>
           <p className="text-sm text-gray-600">Monitor verification workload, urgency, and your latest decisions.</p>

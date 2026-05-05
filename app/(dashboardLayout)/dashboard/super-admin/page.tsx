@@ -27,6 +27,7 @@ import {
   Wallet,
 } from 'lucide-react';
 import CreateNgoForm, { type CreateNgoFormValues } from '@/src/modules/super-admin/components/CreateNgoForm';
+import DashboardAnalytics from '@/components/shared/DashboardAnalytics';
 import {
   assignNgoToReport,
   getAssignmentRecommendations,
@@ -259,6 +260,8 @@ export default function SuperAdminDashboardPage() {
   return (
     <ProtectedRoute allowedRoles={['SUPER_ADMIN']}>
       <div className="space-y-8">
+        <DashboardAnalytics />
+
         <section className="rounded-2xl border border-border/70 bg-card/60 p-5 shadow-sm backdrop-blur-xl sm:p-6">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
